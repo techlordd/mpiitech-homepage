@@ -51,7 +51,7 @@ export default async function Home() {
 <p className="section-note">Programmes are introduced as instructors and equipment become available. No application fee is collected on this site.</p></div></section>
 <AboutSection siteName={branding.siteName}/>
 <HireSection siteName={branding.siteName}/>
-<StepsSection portalUrl={portal}/>
+<StepsSection/>
 <section className="section pale lower" aria-label="Portal, visit and newsletter"><div className="wrap">
 <div className="portal" id="portal"><div><span className="eyebrow">Already part of {branding.siteName}?</span><h2>Your learning, in one place.</h2><p>Access the center portal for learner information, updates, and fees, as well as training and administration tools.</p></div><div className="portal-actions"><a className="pill-button" href={portal || '/contact'}>{portal ? 'Sign in to the portal' : 'Contact the center'}<span className="pill-arrow"><ArrowIcon/></span></a><a className="portal-help" href="#faq">Need assistance?</a></div></div>
 <div className="visit-grid">

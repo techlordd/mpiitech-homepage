@@ -1,4 +1,5 @@
 import { ArrowIcon } from './illustrations';
+import { portalPage } from '@/lib/content';
 
 const stroke = { fill: 'none', stroke: 'currentColor', strokeWidth: 2.2, strokeLinecap: 'round', strokeLinejoin: 'round' } as const;
 
@@ -12,7 +13,8 @@ const steps = [
 ];
 
 /** “Getting started is straightforward”: three numbered steps and the application button. */
-export default function StepsSection({ portalUrl }: { portalUrl?: string }) {
+export default function StepsSection() {
+  const applyUrl = portalPage('/apply');
   return <section id="apply" className="section steps-section"><div className="wrap">
     <span className="eyebrow">Your next step</span>
     <h2>Getting started is straightforward.</h2>
@@ -25,7 +27,7 @@ export default function StepsSection({ portalUrl }: { portalUrl?: string }) {
       <p>{s.text}</p>
     </li>)}</ol>
     <div className="apply-action">
-      <a className="pill-button" href={portalUrl || '/contact'}>{portalUrl ? 'Open application portal' : 'Contact the center about an intake'}<span className="pill-arrow"><ArrowIcon/></span></a>
+      <a className="pill-button" href={applyUrl || '/contact'}>{applyUrl ? 'Open the application form' : 'Contact the center about an intake'}<span className="pill-arrow"><ArrowIcon/></span></a>
       <a className="text-link" href="#programmes">Explore programmes first</a>
     </div>
   </div></section>;

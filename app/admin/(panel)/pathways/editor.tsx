@@ -57,7 +57,7 @@ export default function PathwaysEditor({ initial, interest, portalUrl }: { initi
             <Toggle label="Active — accepting applications" hint="On: the card shows “Now enrolling” and an “Apply now” button. Off: it shows “Coming soon” and the email sign-up." checked={p.active} onChange={active => set(p.id, { active })}/>
             {p.active
               ? <TextField label="“Apply now” link" value={p.applyUrl} max={2000} onChange={applyUrl => set(p.id, { applyUrl })} placeholder={portalUrl || '/contact'}
-                  hint={`Where applicants go, e.g. your application form. Leave empty to use ${portalUrl ? 'the application portal' : 'the Contact us page'}.`}/>
+                  hint={`Where applicants go, e.g. your application form. Leave empty to use ${portalUrl ? 'the portal’s application form' : 'the Contact us page'}.`}/>
               : <Toggle label="“Email me when this programme starts” form" hint="Lets visitors ask to be emailed when applications open." checked={p.notify} onChange={notify => set(p.id, { notify })}/>}
             {p.active && (interest[p.title] ?? 0) > 0 && <div className="notice" style={{ margin: 0 }}><b>{interest[p.title]} {interest[p.title] === 1 ? 'person' : 'people'} asked to be told when this programme starts</b><Link href="/admin/submissions?form=programme">View and export their emails</Link> to let them know applications are open.</div>}
           </div>
