@@ -13,7 +13,7 @@ const steps = [
 
 /** “Getting started is straightforward”: three numbered steps and the application button. */
 export default function StepsSection({ portalUrl }: { portalUrl?: string }) {
-  return <section id="apply" className="section pale steps-section"><div className="wrap">
+  return <section id="apply" className="section steps-section"><div className="wrap">
     <span className="eyebrow">Your next step</span>
     <h2>Getting started is straightforward.</h2>
     <ol className="steps">{steps.map((s, i) => <li key={s.title} className={`step step-${s.tone}`}>

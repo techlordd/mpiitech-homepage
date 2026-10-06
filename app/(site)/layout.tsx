@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import '@fontsource-variable/plus-jakarta-sans';
 import '../globals.css';
 import Footer from '@/components/footer';
 import Header from '@/components/header';
@@ -13,12 +14,12 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function SiteLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const { branding, code } = await getContent();
+  const { branding, code, contact } = await getContent();
   return <html lang="en"><head><HeadCode code={code.head}/></head><body>
     <BodyCode id="custom-body-start" code={code.bodyStart}/>
     <Header logoUrl={branding.logoUrl} logoAlt={branding.logoAlt} topbarText={branding.topbarText} portalUrl={process.env.NEXT_PUBLIC_PORTAL_URL}/>
     {children}
-    <Footer siteName={branding.siteName} footerText={branding.footerText}/>
+    <Footer siteName={branding.siteName} footerText={branding.footerText} address={contact.address} phone={contact.phone} email={contact.email}/>
     <BodyCode id="custom-body-end" code={code.bodyEnd}/>
   </body></html>;
 }

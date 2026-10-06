@@ -26,7 +26,7 @@ export default function AboutSection({ siteName }: { siteName: string }) {
       <h2>Technology skills.<br/>Opportunity close to home.</h2>
       <p>Founded by Modakeke Progressive International (MPI), USA &amp; Canada, {siteName} brings practical skills and community investment closer to Modakeke and surrounding communities.</p>
       <p>Our focus is simple: give learners the foundations, practice, and support to keep growing.</p>
-      <a href="#visit" className="text-link">Learn about MPI</a>
+      <a href="#visit" className="text-link">Visit us in Modakeke</a>
     </div>
     <ul className="values-grid">{values(siteName).map(v => <li key={v.title} className={`value value-${v.tone}`}>
       <span className="value-icon" aria-hidden="true">{v.icon}</span>
