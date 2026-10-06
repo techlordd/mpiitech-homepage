@@ -13,6 +13,7 @@ export type Branding = {
   heroCaptionLabel: string;
   topbarText: string;
   footerText: string;
+  stickyHeader: boolean;
 };
 
 export type PageSeo = {
@@ -166,7 +167,8 @@ export const DEFAULT_CONTENT: SiteContent = {
     heroCaption: 'A place to learn. A community to grow.',
     heroCaptionLabel: 'MPIITECH center, Modakeke',
     topbarText: 'An initiative of MPI, USA & Canada',
-    footerText: 'An initiative of MPI, USA & Canada.'
+    footerText: 'An initiative of MPI, USA & Canada.',
+    stickyHeader: true
   },
   seo: {
     siteUrl: '',

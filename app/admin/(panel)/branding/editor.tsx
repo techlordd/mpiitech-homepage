@@ -1,7 +1,7 @@
 'use client';
 import type { Branding } from '@/lib/content';
 import { saveBranding } from '../../actions';
-import { ImageField, SaveBar, TextField, useEditor } from '../../ui';
+import { ImageField, SaveBar, TextField, Toggle, useEditor } from '../../ui';
 
 export default function BrandingEditor({ initial }: { initial: Branding }) {
   const editor = useEditor(initial, saveBranding);
@@ -16,6 +16,11 @@ export default function BrandingEditor({ initial }: { initial: Branding }) {
         <TextField label="Top bar text" value={b.topbarText} onChange={topbarText => update({ topbarText })} max={140}/>
         <TextField label="Footer text" value={b.footerText} onChange={footerText => update({ footerText })} max={200} hint="Shown after “© year Site title ·”."/>
       </div>
+    </div>
+    <div className="card">
+      <h2>Header</h2>
+      <p>The menu bar at the top of every page.</p>
+      <Toggle label="Sticky header" hint="Keep the menu bar visible at the top of the screen while visitors scroll. Turn off to let it scroll away with the page." checked={b.stickyHeader} onChange={stickyHeader => update({ stickyHeader })}/>
     </div>
     <div className="card">
       <h2>Logo and favicon</h2>

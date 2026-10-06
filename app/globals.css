@@ -81,6 +81,11 @@ textarea{min-height:96px;resize:vertical}
 .topbar .wrap{display:flex;justify-content:space-between;gap:16px}
 .topbar a:hover{color:white}
 header{background:white;border-bottom:1px solid var(--line);position:relative;z-index:20}
+header.is-sticky{position:sticky;top:0;transition:box-shadow .2s}
+header.is-scrolled{box-shadow:0 10px 30px -18px #0c233859}
+/* Keep jump links clear of the sticky header */
+html.sticky-header{scroll-padding-top:81px}
+html.sticky-header .hire-aside{top:104px}
 .nav{min-height:80px;display:flex;align-items:center;justify-content:space-between;gap:24px}
 .logo{display:flex;flex-shrink:0}
 .logo img{width:174px;height:55px;object-fit:contain;object-position:left center}
@@ -202,6 +207,7 @@ section[id]{scroll-margin-top:0}div[id],article[id]{scroll-margin-top:24px}
 }
 @media(max-width:700px){
   :root{--section-y:60px}
+  html.sticky-header{scroll-padding-top:71px}
   .wrap{width:calc(100% - 36px)}
   .topbar{font-size:12px}
   .nav{min-height:70px}
