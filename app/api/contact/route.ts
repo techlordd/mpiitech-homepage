@@ -49,8 +49,9 @@ export async function POST(request: Request) {
       subject = def.subject; recipients = splitList(def.recipients);
       if (def.autoReply.enabled && def.autoReply.subject.trim()) autoReply = def.autoReply;
     } else if (data.kind === 'programme') {
-      const pathway = content.pathways.find(p => p.visible && p.notify && p.title === data.programme);
-      if (!pathway) return fail('This programme is not currently accepting update requests.', 400);
+      const pathway = content.pathways.find(p => p.visible && p.title === data.programme);
+      if (pathway?.active) return fail('Good news: this programme is now open for applications. Please refresh the page and use “Apply now”.', 409);
+      if (!pathway?.notify) return fail('This programme is not currently accepting update requests.', 400);
       subject = `${content.branding.siteName} — Programme notification request: ${pathway.title}`;
       fields = [{ key: 'email', label: 'Email address', value: data.email }, { key: 'programme', label: 'Programme', value: pathway.title }];
       summary = pathway.title;

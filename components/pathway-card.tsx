@@ -1,4 +1,4 @@
-import { pathwayArt, pathwayColor, type Pathway } from '@/lib/content';
+import { applyLink, pathwayArt, pathwayColor, type Pathway } from '@/lib/content';
 import { EmailForm } from './forms';
 import { ArrowIcon, MailIcon, PathwayScene } from './illustrations';
 
@@ -14,10 +14,10 @@ export default function PathwayCard({ pathway: p, index }: { pathway: Pathway; i
   const number = String(index + 1).padStart(2, '0');
   const art = pathwayArt(p);
   const hasMore = Boolean(p.details || p.skills.some(s => s.description));
-  return <article className={`path-card tone-${pathwayColor(p, index)}`} aria-labelledby={`path-${p.id}`}>
+  return <article className={`path-card tone-${pathwayColor(p, index)} ${p.active ? 'is-active' : ''}`} aria-labelledby={`path-${p.id}`}>
     <div className="path-top">
       <div className="path-text">
-        <span className="path-num" aria-label={`Pathway ${number}`}>{number}</span>
+        <div className="path-meta"><span className="path-num" aria-label={`Pathway ${number}`}>{number}</span><StatusBadge active={p.active}/></div>
         <h3 id={`path-${p.id}`}>{p.title}</h3>
         <p>{p.description}</p>
         {p.skills.length > 0 && <ul className="path-tags" aria-label="Skills you will learn">{p.skills.slice(0, 4).map((s, i) => <li key={i}>{s.title}</li>)}{p.skills.length > 4 && <li>+{p.skills.length - 4} more</li>}</ul>}
@@ -34,6 +34,12 @@ export default function PathwayCard({ pathway: p, index }: { pathway: Pathway; i
         {p.skills.length > 0 && <ol>{p.skills.map((s, i) => <li key={i}><b>{s.title}</b>{s.description && <span>{s.description}</span>}</li>)}</ol>}
       </div>
     </details>}
-    {p.notify && <div className="notify-box path-notify"><span className="notify-icon"><MailIcon/></span><EmailForm kind="programme" programme={p.title}/></div>}
+    {p.active
+      ? <div className="apply-box"><div><b>Applications are open</b><span>Secure your place in the next class.</span></div><a className="apply-button" href={applyLink(p)}>Apply now<span className="pill-arrow"><ArrowIcon/></span></a></div>
+      : p.notify && <div className="notify-box path-notify"><span className="notify-icon"><MailIcon/></span><EmailForm kind="programme" programme={p.title}/></div>}
   </article>;
+}
+
+export function StatusBadge({ active }: { active: boolean }) {
+  return active ? <span className="status-badge open"><i aria-hidden="true"/>Now enrolling</span> : <span className="status-badge soon">Coming soon</span>;
 }

@@ -86,6 +86,12 @@ const post = (payload, origin = 'http://localhost:3000') => POST(new Request('ht
   assert.deepEqual(JSON.parse(JSON.stringify(sent[5].message.to)), ['visitor@example.com']);
   assert.ok(sent[5].message.text.startsWith('Hello Ada,'));
 
+  // Active programmes take applications instead of update requests.
+  const pathways = structuredClone(DEFAULT_CONTENT.pathways); pathways[1].active = true;
+  await store().setDoc('pathways', pathways);
+  assert.equal((await post({ ...base(), kind: 'programme', programme: pathways[1].title })).status, 409);
+  assert.equal((await post({ ...base(), kind: 'programme', programme: pathways[2].title })).status, 200);
+
   // Provider failure is logged; the stored submission is still accepted.
   providerError = true;
   assert.equal((await post({ ...base(), kind: 'newsletter' })).status, 200);
@@ -96,5 +102,5 @@ const post = (payload, origin = 'http://localhost:3000') => POST(new Request('ht
   assert.ok(log.items.some(e => e.status === 'failed') && log.items.some(e => e.status === 'not_configured') && log.items.some(e => e.status === 'sent' && e.providerId));
 
   fs.rmSync(dataDir, { recursive: true, force: true });
-  process.stdout.write('PASS: validation, consent, dates, options, origin, missing config, storage fallback, four form types, recipients, per-form routing, hidden fields, auto-reply, reply-to, zero computers, idempotency, retries, honeypot, provider failure and delivery log. No emails sent.\n');
+  process.stdout.write('PASS: validation, consent, dates, options, origin, missing config, storage fallback, four form types, recipients, per-form routing, hidden fields, auto-reply, active programmes, reply-to, zero computers, idempotency, retries, honeypot, provider failure and delivery log. No emails sent.\n');
 })().catch(error => { fs.rmSync(dataDir, { recursive: true, force: true }); process.stderr.write(String(error.stack || error) + '\n'); process.exitCode = 1; });

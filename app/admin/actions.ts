@@ -103,7 +103,7 @@ export async function saveCode(input: unknown) {
 const pathwaySchema = z.object({
   id: z.string().trim().regex(/^[a-z0-9-]{1,80}$/), title: required(120), headline: text(160), description: required(600), details: text(2000),
   skills: z.array(z.object({ title: text(200), description: text(300), icon: z.enum(SKILL_ICONS) })).max(20).transform(list => list.filter(x => x.title)),
-  image: link, imageAlt: text(200), color: z.enum(PATHWAY_COLORS), art: z.enum(PATHWAY_ART), featured: z.boolean(), visible: z.boolean(), notify: z.boolean()
+  image: link, imageAlt: text(200), color: z.enum(PATHWAY_COLORS), art: z.enum(PATHWAY_ART), featured: z.boolean(), visible: z.boolean(), notify: z.boolean(), active: z.boolean(), applyUrl: link
 });
 const pathwaysSchema = z.array(pathwaySchema).max(30).superRefine((items, ctx) => {
   const titles = new Set<string>(); const ids = new Set<string>();

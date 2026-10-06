@@ -5,7 +5,7 @@ import { PATHWAY_ART, PATHWAY_COLORS, SKILL_ICONS, type Pathway, type PathwayArt
 import { savePathways } from '../../actions';
 import { ImageField, SaveBar, SelectField, TextArea, TextField, Toggle, newKey, useEditor } from '../../ui';
 
-export default function PathwaysEditor({ initial, interest }: { initial: Pathway[]; interest: Record<string, number> }) {
+export default function PathwaysEditor({ initial, interest, portalUrl }: { initial: Pathway[]; interest: Record<string, number>; portalUrl: string }) {
   const editor = useEditor(initial, savePathways);
   const { value: items, setValue } = editor;
   const [open, setOpen] = useState<string | null>(null);
@@ -17,12 +17,12 @@ export default function PathwaysEditor({ initial, interest }: { initial: Pathway
   };
   const add = () => {
     const id = newKey('pathway');
-    setValue(list => [...list, { id, title: '', headline: '', description: '', details: '', skills: [], image: '', imageAlt: '', color: 'auto', art: 'auto', featured: false, visible: true, notify: true }]);
+    setValue(list => [...list, { id, title: '', headline: '', description: '', details: '', skills: [], image: '', imageAlt: '', color: 'auto', art: 'auto', featured: false, visible: true, notify: true, active: false, applyUrl: '' }]);
     setOpen(id);
   };
   let number = 0;
   return <>
-    <div className="notice"><b>How pathways appear</b>A <em>featured</em> pathway is shown as the large “Start here” card with its skills list. Other visible pathways are numbered “Pathway / 01, 02…” in the order below. Visitors can ask to be emailed when a pathway with notifications turned on starts — see <Link href="/admin/submissions?form=programme">Programme interest</Link>.</div>
+    <div className="notice"><b>How pathways appear</b>A <em>featured</em> pathway is shown as the large “Start here” card with its skills list. Other visible pathways are numbered “Pathway / 01, 02…” in the order below. Turn on <em>Active</em> when a programme is accepting applications: its card then shows “Now enrolling” and an “Apply now” button. While it is not active, it shows “Coming soon” and visitors can ask to be emailed when it starts — see <Link href="/admin/submissions?form=programme">Programme interest</Link>.</div>
     {items.map((p, i) => {
       const label = p.featured ? 'Featured · Start here' : p.visible ? `Pathway / ${String(++number).padStart(2, '0')}` : 'Hidden';
       const isOpen = open === p.id;
@@ -34,7 +34,7 @@ export default function PathwaysEditor({ initial, interest }: { initial: Pathway
           </div>
           <div className="title" onClick={() => setOpen(isOpen ? null : p.id)}>
             <b>{p.title || 'Untitled pathway'}</b>
-            <small>{label}{interest[p.title] ? ` · ${interest[p.title]} interested` : ''}{!p.notify ? ' · notifications off' : ''}</small>
+            <small>{label} · {p.active ? <b style={{ color: 'var(--green)' }}>Active – accepting applications</b> : 'Coming soon'}{interest[p.title] ? ` · ${interest[p.title]} interested` : ''}{!p.active && !p.notify ? ' · notifications off' : ''}</small>
           </div>
           <Toggle label="Visible" checked={p.visible} onChange={visible => set(p.id, { visible })}/>
           <button className="btn ghost sm" onClick={() => setOpen(isOpen ? null : p.id)} aria-expanded={isOpen}>{isOpen ? 'Close' : 'Edit'}</button>
@@ -53,7 +53,14 @@ export default function PathwaysEditor({ initial, interest }: { initial: Pathway
           <ImageField className="span2" label="Picture" value={p.image} onChange={image => set(p.id, { image })} cover hint={p.featured ? 'Optional. A photo of a learner works best (portrait, at least 700 px wide). Leave empty to show the built-in illustration.' : 'Optional. A photo of a learner works best (square or portrait, at least 600 px wide). Leave empty to show the illustration.'}/>
           {p.image && <TextField className="span2" label="Picture description (alt text)" value={p.imageAlt} max={200} onChange={imageAlt => set(p.id, { imageAlt })} hint="Describe the photo for screen readers, e.g. “A student practising on a laptop at MPIITECH”."/>}
           <Toggle label="Featured “Start here” card" hint="Shows this pathway as the large card above the others." checked={p.featured} onChange={featured => set(p.id, { featured })}/>
-          <Toggle label="“Email me when this programme starts” form" hint="Lets visitors request an update for this pathway." checked={p.notify} onChange={notify => set(p.id, { notify })}/>
+          <div className="span2 status-panel">
+            <Toggle label="Active — accepting applications" hint="On: the card shows “Now enrolling” and an “Apply now” button. Off: it shows “Coming soon” and the email sign-up." checked={p.active} onChange={active => set(p.id, { active })}/>
+            {p.active
+              ? <TextField label="“Apply now” link" value={p.applyUrl} max={2000} onChange={applyUrl => set(p.id, { applyUrl })} placeholder={portalUrl || '/contact'}
+                  hint={`Where applicants go, e.g. your application form. Leave empty to use ${portalUrl ? 'the application portal' : 'the Contact us page'}.`}/>
+              : <Toggle label="“Email me when this programme starts” form" hint="Lets visitors ask to be emailed when applications open." checked={p.notify} onChange={notify => set(p.id, { notify })}/>}
+            {p.active && (interest[p.title] ?? 0) > 0 && <div className="notice" style={{ margin: 0 }}><b>{interest[p.title]} {interest[p.title] === 1 ? 'person' : 'people'} asked to be told when this programme starts</b><Link href="/admin/submissions?form=programme">View and export their emails</Link> to let them know applications are open.</div>}
+          </div>
         </div></div>}
       </div>;
     })}

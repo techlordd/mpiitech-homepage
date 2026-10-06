@@ -1,5 +1,6 @@
-import { skillIcon, type Pathway } from '@/lib/content';
+import { applyLink, skillIcon, type Pathway } from '@/lib/content';
 import { EmailForm } from './forms';
+import { StatusBadge } from './pathway-card';
 import { ArrowIcon, CapIcon, FoundationsIllustration, MailIcon, SkillIcon } from './illustrations';
 
 /** The large “Start here” card for a featured pathway. */
@@ -11,13 +12,15 @@ export default function StartCard({ pathway: p }: { pathway: Pathway }) {
   const titleId = `start-${p.id}`;
   return <article className="start-card" aria-labelledby={titleId}>
     <div className="start-intro">
-      <span className="start-pill"><CapIcon/>Start here</span>
+      <div className="start-badges"><span className="start-pill"><CapIcon/>Start here</span><StatusBadge active={p.active}/></div>
       <span className="start-kicker">{p.title}</span>
       <h3 id={titleId}>{lead}<span className="squiggle">{last}<svg viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path d="M3 10c40-7 90-9 194-4" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round"/></svg></span></h3>
       <p className="start-lede">{p.description}</p>
       {p.details && <p className="start-details">{p.details}</p>}
-      <a className="pill-button" href="#apply">Check available programmes<span className="pill-arrow"><ArrowIcon/></span></a>
-      {p.notify && <div className="notify-box"><span className="notify-icon"><MailIcon/></span><EmailForm kind="programme" programme={p.title} label="Get notified about the next intake"/></div>}
+      {p.active
+        ? <a className="pill-button" href={applyLink(p)}>Apply now<span className="pill-arrow"><ArrowIcon/></span></a>
+        : <a className="pill-button" href="#apply">Check available programmes<span className="pill-arrow"><ArrowIcon/></span></a>}
+      {!p.active && p.notify && <div className="notify-box"><span className="notify-icon"><MailIcon/></span><EmailForm kind="programme" programme={p.title} label="Get notified about the next intake"/></div>}
     </div>
     <div className={`start-media ${p.image ? 'has-photo' : ''}`}>
       {/* eslint-disable-next-line @next/next/no-img-element -- admin-uploaded image */}

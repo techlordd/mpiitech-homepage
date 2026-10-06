@@ -74,6 +74,9 @@ export type Pathway = {
   featured: boolean;
   visible: boolean;
   notify: boolean;
+  /** Open for applications: shows “Apply now” instead of the “Email me when this programme starts” form. */
+  active: boolean;
+  applyUrl: string;
 };
 
 export type FieldType = 'text' | 'email' | 'tel' | 'number' | 'date' | 'textarea' | 'select' | 'checkbox';
@@ -210,7 +213,7 @@ export const DEFAULT_CONTENT: SiteContent = {
         { title: 'Using the internet and staying safe online', description: 'Explore the internet, find useful information, and learn how to stay safe.', icon: 'internet' },
         { title: 'An introduction to programming', description: 'Understand the basics of coding and start building simple projects.', icon: 'code' }
       ],
-      featured: true, visible: true, notify: true
+      featured: true, visible: true, notify: true, active: false, applyUrl: ''
     },
     {
       id: 'full-stack-web-development', title: 'Full-Stack Web Development', headline: '',
@@ -221,7 +224,7 @@ export const DEFAULT_CONTENT: SiteContent = {
         { title: 'JavaScript', description: 'Make pages interactive with buttons, games, and forms.', icon: 'code' },
         { title: 'Databases', description: 'Store and organise the information behind a website.', icon: 'data' }
       ],
-      featured: false, visible: true, notify: true
+      featured: false, visible: true, notify: true, active: false, applyUrl: ''
     },
     {
       id: 'network-administration-security', title: 'Network Administration & Security', headline: '',
@@ -232,7 +235,7 @@ export const DEFAULT_CONTENT: SiteContent = {
         { title: 'System Administration', description: 'Set up, manage, and troubleshoot computers and users.', icon: 'computer' },
         { title: 'Cyber Security', description: 'Protect devices, data, and people from online threats.', icon: 'security' }
       ],
-      featured: false, visible: true, notify: true
+      featured: false, visible: true, notify: true, active: false, applyUrl: ''
     },
     {
       id: 'data-analytics-python', title: 'Data Analytics with Python', headline: '',
@@ -243,7 +246,7 @@ export const DEFAULT_CONTENT: SiteContent = {
         { title: 'Data Analysis', description: 'Clean, sort, and explore real data to find answers.', icon: 'data' },
         { title: 'Data Visualization', description: 'Turn numbers into clear charts and stories.', icon: 'data' }
       ],
-      featured: false, visible: true, notify: true
+      featured: false, visible: true, notify: true, active: false, applyUrl: ''
     },
     {
       id: 'ai-engineering', title: 'AI Engineering', headline: '',
@@ -254,7 +257,7 @@ export const DEFAULT_CONTENT: SiteContent = {
         { title: 'Prompt Engineering', description: 'Give AI tools clear instructions to get useful results.', icon: 'ai' },
         { title: 'Build AI Projects', description: 'Create simple apps and assistants that solve real problems.', icon: 'code' }
       ],
-      featured: false, visible: true, notify: true
+      featured: false, visible: true, notify: true, active: false, applyUrl: ''
     }
   ],
   forms: {
@@ -407,4 +410,9 @@ export function pathwayArt(p: Pick<Pathway, 'art' | 'title'>): Exclude<PathwayAr
 const AUTO_COLORS: Exclude<PathwayColor, 'auto'>[] = ['blue', 'green', 'purple', 'orange'];
 export function pathwayColor(p: Pick<Pathway, 'color'>, index: number): Exclude<PathwayColor, 'auto'> {
   return p.color !== 'auto' && PATHWAY_COLORS.includes(p.color) ? p.color : AUTO_COLORS[index % AUTO_COLORS.length];
+}
+
+/** Where “Apply now” goes: the pathway’s own link, else the application portal, else the contact page. */
+export function applyLink(p: Pick<Pathway, 'applyUrl'>) {
+  return p.applyUrl || process.env.NEXT_PUBLIC_PORTAL_URL || '/contact';
 }

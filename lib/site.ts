@@ -10,7 +10,7 @@ import {
 export const CONTENT_TAG = 'site-content';
 
 const fieldDefaults: FormField = { id: '', key: '', label: '', type: 'text', placeholder: '', help: '', required: false, visible: true, options: [], width: 'half', min: null, max: null, locked: false };
-const pathwayDefaults: Pathway = { id: '', title: '', headline: '', description: '', details: '', skills: [], image: '', imageAlt: '', color: 'auto', art: 'auto', featured: false, visible: true, notify: true };
+const pathwayDefaults: Pathway = { id: '', title: '', headline: '', description: '', details: '', skills: [], image: '', imageAlt: '', color: 'auto', art: 'auto', featured: false, visible: true, notify: true, active: false, applyUrl: '' };
 
 function normaliseForm(id: FormId, stored: unknown): FormDef {
   const form = withDefaults(DEFAULT_CONTENT.forms[id], stored);
