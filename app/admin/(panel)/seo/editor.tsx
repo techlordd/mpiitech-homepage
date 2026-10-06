@@ -4,9 +4,9 @@ import { seoVars, type Branding, type PageSeo, type Seo, type SeoPageKey } from 
 import { saveSeo } from '../../actions';
 import { ImageField, ListField, SaveBar, TextArea, TextField, Toggle, useEditor } from '../../ui';
 
-const TABS = [['general', 'General'], ['home', 'Home page'], ['contact', 'Contact page'], ['verification', 'Verification'], ['schema', 'Organisation schema']] as const;
+const TABS = [['general', 'General'], ['home', 'Home page'], ['hire', 'Hire the center'], ['contact', 'Contact page'], ['verification', 'Verification'], ['schema', 'Organisation schema']] as const;
 type Tab = typeof TABS[number][0];
-const PATHS: Record<SeoPageKey, string> = { home: '/', contact: '/contact' };
+const PATHS: Record<SeoPageKey, string> = { home: '/', hire: '/hire-the-center', contact: '/contact' };
 
 export default function SeoEditor({ initial, branding, initialTab }: { initial: Seo; branding: Branding; initialTab?: string }) {
   const editor = useEditor(initial, saveSeo);
@@ -31,7 +31,7 @@ export default function SeoEditor({ initial, branding, initialTab }: { initial: 
       </div>
     </div>}
 
-    {(tab === 'home' || tab === 'contact') && <PageSeoPanel key={tab} pageKey={tab} page={seo.pages[tab]} seo={seo} branding={branding} onChange={patch => setPage(tab, patch)}/>}
+    {(tab === 'home' || tab === 'hire' || tab === 'contact') && <PageSeoPanel key={tab} pageKey={tab} page={seo.pages[tab]} seo={seo} branding={branding} onChange={patch => setPage(tab, patch)}/>}
 
     {tab === 'verification' && <div className="card">
       <h2>Search engine verification</h2>

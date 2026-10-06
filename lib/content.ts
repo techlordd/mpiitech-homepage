@@ -27,7 +27,7 @@ export type PageSeo = {
   noindex: boolean;
 };
 
-export type SeoPageKey = 'home' | 'contact';
+export type SeoPageKey = 'home' | 'hire' | 'contact';
 
 export type Seo = {
   siteUrl: string;
@@ -185,6 +185,11 @@ export const DEFAULT_CONTENT: SiteContent = {
         title: '%%sitename%% %%sep%% %%tagline%%',
         description: 'Learn practical digital skills at MPIITECH in Modakeke, Osun State. Explore training programmes and enquire about center hire.',
         focusKeyphrase: 'digital skills Modakeke'
+      }),
+      hire: page({
+        title: 'Hire a training center in Modakeke %%sep%% %%sitename%%',
+        description: 'Hire the MPIITECH center in Modakeke for corporate training, school sessions, computer-based testing, and certification. Send an enquiry today.',
+        focusKeyphrase: 'training center hire Modakeke'
       }),
       contact: page({
         title: 'Contact us %%sep%% %%sitename%%',

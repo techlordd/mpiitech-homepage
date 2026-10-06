@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import AboutSection from '@/components/about-section';
-import { DynamicForm, EmailForm } from '@/components/forms';
+import { EmailForm } from '@/components/forms';
+import { HireTeaser } from '@/components/hire';
 import PathwayCard from '@/components/pathway-card';
 import StartCard from '@/components/start-card';
 import { organisationJsonLd, pageMetadata } from '@/lib/seo';
@@ -12,7 +13,6 @@ export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata(await getContent(), 'home', '/');
 }
 
-const uses = [['Corporate training', 'A dedicated space for company workshops, team learning, and professional development.'], ['School training sessions', 'Give your learners practical computer experience and digital skills training.'], ['Computer-based testing', 'Deliver assessments using our ICT facilities and equipment, subject to your technical requirements and any approvals.'], ['Certification programmes', 'Host certification training and preparation. Please discuss any technical or provider requirements.'], ['Employee upskilling', 'Support professional and government employees with digital skills and workplace productivity training.'], ['Flexible training arrangements', 'Discuss one-off sessions, regular training, and suitable schedules for your group’s needs.']];
 const portal = process.env.NEXT_PUBLIC_PORTAL_URL;
 
 export default async function Home() {
@@ -37,7 +37,7 @@ export default async function Home() {
 </div>}
 <p className="section-note">Programmes are introduced as instructors and equipment become available. No application fee is collected on this site.</p></div></section>
 <AboutSection siteName={branding.siteName} imageUrl={branding.aboutImageUrl} imageAlt={branding.aboutImageAlt}/>
-<section id="hire" className="section pale"><div className="wrap"><div className="section-heading"><div><span className="eyebrow">A space for your organisation</span><h2>Your training.<br/>Our center.</h2></div><p>Hire the {branding.siteName} center for organised training, assessments, and workforce development in Modakeke.</p></div><div className="uses-grid">{uses.map(([title, text]) => <article className="card" key={title}><h4>{title}</h4><p>{text}</p></article>)}</div><div className="hire-note"><p>Tell us your preferred dates, group size, equipment, and assessment needs. The team will confirm availability, suitability, and pricing.</p><a className="button" href="#enquiry">{content.forms.enquiry.title || 'Enquire about center hire'}</a></div><div id="enquiry"><DynamicForm def={content.forms.enquiry}/></div></div></section>
+<HireTeaser siteName={branding.siteName}/>
 <section id="apply" className="section pale steps-section"><div className="wrap"><span className="eyebrow">Your next step</span><h2>Getting started is straightforward.</h2><div className="steps">{[['Explore your options', 'Choose the training path that matches your interests and experience.'], ['Check the next intake', 'Visit the application portal for current programme information.'], ['Submit your application', 'Follow the portal instructions and provide your details.']].map(([title, text], i) => <div key={title}><span>{i + 1}</span><div><h4>{title}</h4><p>{text}</p></div></div>)}</div><div className="apply-action"><a className="button" href={portal || '/contact'}>{portal ? 'Open application portal' : 'Contact the center about an intake'}</a></div></div></section>
 <section className="section lower"><div className="wrap"><div className="portal" id="portal"><div><span className="eyebrow">Already part of {branding.siteName}?</span><h2>Your learning, in one place.</h2><p>Access the center portal for learner information, updates, and fees, as well as training and administration tools.</p></div><div><a className="button orange" href={portal || '/contact'}>{portal ? 'Sign in to the portal' : 'Contact the center'}</a><a className="portal-help" href="#faq">Need assistance?</a></div></div>
 <div className="visit-grid" id="visit"><div><span className="eyebrow orange-text">Visit the center</span><h2>Find us in Modakeke.</h2><p className="address">{contact.address}</p><a className="text-link" href="/contact">Contact the team</a><span className="contact-separator"> · </span><a className="text-link" href="#about">More about {branding.siteName}</a></div><div id="faq"><span className="eyebrow">A few useful answers</span>{[['Can I start as a beginner?', 'Yes. Digital Foundations is designed for beginners and secondary school students. You can request an update when the next intake is available.'], ['Where can I find fees and start dates?', 'Check the application portal for current fees, schedules, and available intakes, or contact the center using the contact page.'], ['How do I access my existing account?', portal ? 'Use the portal sign-in button above to access your existing account.' : 'Contact the center team for the current learner portal link and help accessing your account.']].map(([q, a]) => <details key={q}><summary>{q}</summary><p>{a}</p></details>)}</div></div>

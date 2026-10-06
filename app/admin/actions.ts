@@ -83,7 +83,7 @@ const seoSchema = z.object({
   siteUrl: z.string().trim().max(200).refine(v => !v || /^https?:\/\/[^\s/]+\/?$/i.test(v), 'Enter the site address only, e.g. https://www.mpiitech.com').transform(v => v.replace(/\/$/, '')),
   titleSeparator: text(5), allowIndexing: z.boolean(), defaultOgImageUrl: link, twitterHandle: text(50),
   googleVerification: verification, bingVerification: verification,
-  pages: z.object({ home: pageSeoSchema, contact: pageSeoSchema }),
+  pages: z.object({ home: pageSeoSchema, hire: pageSeoSchema, contact: pageSeoSchema }),
   schema: z.object({
     enabled: z.boolean(), type: text(60), name: text(120), telephone: text(60), email: emailOrEmpty, streetAddress: text(300),
     locality: text(120), region: text(120), country: text(60), sameAs: z.array(link.pipe(z.string().min(1))).max(20)

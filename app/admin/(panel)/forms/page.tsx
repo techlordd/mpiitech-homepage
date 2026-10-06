@@ -13,7 +13,7 @@ export default async function FormsPage({ searchParams }: { searchParams: Promis
   return <>
     <PageHead title="Forms" description="Change the questions, wording, options and email notifications of the website forms.">
       <Link className="btn ghost" href={`/admin/submissions?form=${id}`}>View submissions</Link>
-      <a className="btn ghost" href={id === 'enquiry' ? '/#enquiry' : '/contact'} target="_blank" rel="noreferrer">Preview form ↗</a>
+      <a className="btn ghost" href={id === 'enquiry' ? '/hire-the-center#enquiry' : '/contact'} target="_blank" rel="noreferrer">Preview form ↗</a>
     </PageHead>
     <div className="tabs">
       <Link href="/admin/forms?form=enquiry" className={id === 'enquiry' ? 'active' : ''}>Center hire enquiry</Link>
