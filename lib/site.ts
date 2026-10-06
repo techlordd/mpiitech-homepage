@@ -3,14 +3,14 @@ import { cache } from 'react';
 import { unstable_cache } from 'next/cache';
 import { store } from './store';
 import {
-  CONTENT_KEYS, DEFAULT_CONTENT, DEFAULT_EMAIL_SETTINGS, withDefaults,
+  CONTENT_KEYS, DEFAULT_CONTENT, DEFAULT_EMAIL_SETTINGS, normaliseSkill, withDefaults,
   type ContentKey, type EmailSettings, type FormDef, type FormField, type FormId, type Pathway, type SiteContent
 } from './content';
 
 export const CONTENT_TAG = 'site-content';
 
 const fieldDefaults: FormField = { id: '', key: '', label: '', type: 'text', placeholder: '', help: '', required: false, visible: true, options: [], width: 'half', min: null, max: null, locked: false };
-const pathwayDefaults: Pathway = { id: '', title: '', headline: '', description: '', details: '', skills: [], featured: false, visible: true, notify: true };
+const pathwayDefaults: Pathway = { id: '', title: '', headline: '', description: '', details: '', skills: [], image: '', imageAlt: '', featured: false, visible: true, notify: true };
 
 function normaliseForm(id: FormId, stored: unknown): FormDef {
   const form = withDefaults(DEFAULT_CONTENT.forms[id], stored);
@@ -26,7 +26,7 @@ export function normaliseContent(docs: Record<string, unknown>): SiteContent {
     branding: withDefaults(DEFAULT_CONTENT.branding, docs.branding),
     seo: withDefaults(DEFAULT_CONTENT.seo, docs.seo),
     code: withDefaults(DEFAULT_CONTENT.code, docs.code),
-    pathways: Array.isArray(docs.pathways) ? docs.pathways.map(p => withDefaults(pathwayDefaults, p)) : DEFAULT_CONTENT.pathways,
+    pathways: Array.isArray(docs.pathways) ? docs.pathways.map(p => { const pathway = withDefaults(pathwayDefaults, p); return { ...pathway, skills: pathway.skills.map(normaliseSkill) }; }) : DEFAULT_CONTENT.pathways,
     forms: { enquiry: normaliseForm('enquiry', forms.enquiry), contact: normaliseForm('contact', forms.contact) },
     contact: withDefaults(DEFAULT_CONTENT.contact, docs.contact)
   };

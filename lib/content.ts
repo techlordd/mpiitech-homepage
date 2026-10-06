@@ -52,13 +52,19 @@ export type Seo = {
 
 export type CustomCode = { head: string; bodyStart: string; bodyEnd: string };
 
+export const SKILL_ICONS = ['auto', 'computer', 'documents', 'internet', 'code', 'network', 'data', 'ai', 'security', 'design', 'book'] as const;
+export type SkillIcon = typeof SKILL_ICONS[number];
+export type PathwaySkill = { title: string; description: string; icon: SkillIcon };
+
 export type Pathway = {
   id: string;
   title: string;
   headline: string;
   description: string;
   details: string;
-  skills: string[];
+  skills: PathwaySkill[];
+  image: string;
+  imageAlt: string;
   featured: boolean;
   visible: boolean;
   notify: boolean;
@@ -191,31 +197,37 @@ export const DEFAULT_CONTENT: SiteContent = {
     {
       id: 'digital-foundations', title: 'Digital Foundations', headline: 'Get comfortable with computers.',
       description: 'Build confidence using a computer for school, work, and everyday life. A practical foundation for secondary school students and beginners.',
-      details: '', skills: ['Computer parts, files, and folders', 'Microsoft Office and productivity tools', 'Using the internet and staying safe online', 'An introduction to programming'],
+      details: '', image: '', imageAlt: '',
+      skills: [
+        { title: 'Computer parts, files, and folders', description: 'Learn the basic parts of a computer and how to manage your files.', icon: 'computer' },
+        { title: 'Microsoft Office and productivity tools', description: 'Create documents, spreadsheets, and presentations with ease.', icon: 'documents' },
+        { title: 'Using the internet and staying safe online', description: 'Explore the internet, find useful information, and learn how to stay safe.', icon: 'internet' },
+        { title: 'An introduction to programming', description: 'Understand the basics of coding and start building simple projects.', icon: 'code' }
+      ],
       featured: true, visible: true, notify: true
     },
     {
       id: 'full-stack-web-development', title: 'Full-Stack Web Development', headline: '',
       description: 'Explore how websites work, from what a visitor sees to the systems behind the page.',
-      details: 'Learn the foundations of HTML, CSS, JavaScript, databases, and full-stack development through practical projects.', skills: [],
+      details: 'Learn the foundations of HTML, CSS, JavaScript, databases, and full-stack development through practical projects.', skills: [], image: '', imageAlt: '',
       featured: false, visible: true, notify: true
     },
     {
       id: 'network-administration-security', title: 'Network Administration & Security', headline: '',
       description: 'Develop skills to connect computers, support networks, and protect digital systems.',
-      details: 'Explore computer networks, administration, troubleshooting, and the fundamentals of digital security.', skills: [],
+      details: 'Explore computer networks, administration, troubleshooting, and the fundamentals of digital security.', skills: [], image: '', imageAlt: '',
       featured: false, visible: true, notify: true
     },
     {
       id: 'data-analytics-python', title: 'Data Analytics with Python', headline: '',
       description: 'Learn how to work with data and turn information into useful insights.',
-      details: 'Build skills in Python, data preparation, analysis, and communicating findings through practical exercises.', skills: [],
+      details: 'Build skills in Python, data preparation, analysis, and communicating findings through practical exercises.', skills: [], image: '', imageAlt: '',
       featured: false, visible: true, notify: true
     },
     {
       id: 'ai-engineering', title: 'AI Engineering', headline: '',
       description: 'Build the programming and practical AI skills to create useful intelligent applications and agents.',
-      details: 'Explore programming foundations, AI applications, and practical projects that solve everyday problems.', skills: [],
+      details: 'Explore programming foundations, AI applications, and practical projects that solve everyday problems.', skills: [], image: '', imageAlt: '',
       featured: false, visible: true, notify: true
     }
   ],
@@ -339,3 +351,21 @@ export function splitList(value: string) {
 }
 
 export const visibleFields = (def: FormDef) => def.sections.flatMap(s => s.fields).filter(f => f.visible || f.locked);
+
+/** Older saved content stored skills as plain strings. */
+export function normaliseSkill(skill: unknown): PathwaySkill {
+  if (typeof skill === 'string') return { title: skill, description: '', icon: 'auto' };
+  const s = (skill ?? {}) as Partial<PathwaySkill>;
+  return { title: String(s.title ?? ''), description: String(s.description ?? ''), icon: SKILL_ICONS.includes(s.icon as SkillIcon) ? s.icon as SkillIcon : 'auto' };
+}
+
+const ICON_KEYWORDS: [Exclude<SkillIcon, 'auto'>, RegExp][] = [
+  ['security', /secur|safe|protect|cyber/i], ['internet', /internet|online|web brows|email/i], ['code', /program|cod|html|css|javascript|software|develop/i],
+  ['documents', /office|word|excel|document|spreadsheet|presentation|productiv/i], ['network', /network|router|cabl|server/i],
+  ['data', /data|analy|statist|chart|python/i], ['ai', /\bai\b|artificial|machine learning|agent/i], ['design', /design|graphic|ui|ux/i],
+  ['computer', /computer|hardware|file|folder|typing|keyboard/i]
+];
+export function skillIcon(skill: PathwaySkill): Exclude<SkillIcon, 'auto'> {
+  if (skill.icon !== 'auto') return skill.icon;
+  return ICON_KEYWORDS.find(([, re]) => re.test(skill.title))?.[0] ?? 'book';
+}

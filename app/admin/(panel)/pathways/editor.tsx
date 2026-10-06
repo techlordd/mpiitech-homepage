@@ -1,9 +1,9 @@
 'use client';
 import Link from 'next/link';
 import { useState } from 'react';
-import type { Pathway } from '@/lib/content';
+import { SKILL_ICONS, type Pathway, type PathwaySkill, type SkillIcon } from '@/lib/content';
 import { savePathways } from '../../actions';
-import { ListField, SaveBar, TextArea, TextField, Toggle, newKey, useEditor } from '../../ui';
+import { ImageField, SaveBar, TextArea, TextField, Toggle, newKey, useEditor } from '../../ui';
 
 export default function PathwaysEditor({ initial, interest }: { initial: Pathway[]; interest: Record<string, number> }) {
   const editor = useEditor(initial, savePathways);
@@ -17,7 +17,7 @@ export default function PathwaysEditor({ initial, interest }: { initial: Pathway
   };
   const add = () => {
     const id = newKey('pathway');
-    setValue(list => [...list, { id, title: '', headline: '', description: '', details: '', skills: [], featured: false, visible: true, notify: true }]);
+    setValue(list => [...list, { id, title: '', headline: '', description: '', details: '', skills: [], image: '', imageAlt: '', featured: false, visible: true, notify: true }]);
     setOpen(id);
   };
   let number = 0;
@@ -45,7 +45,11 @@ export default function PathwaysEditor({ initial, interest }: { initial: Pathway
           {p.featured && <TextField label="Headline" value={p.headline} max={160} onChange={headline => set(p.id, { headline })} hint="Large heading on the featured card, e.g. “Get comfortable with computers.”"/>}
           <TextArea className="span2" label="Short description" value={p.description} max={600} onChange={description => set(p.id, { description })}/>
           <TextArea className="span2" label={p.featured ? 'Extra details (optional)' : 'Skills summary (shown under “Explore the skills”)'} value={p.details} max={2000} onChange={details => set(p.id, { details })}/>
-          <ListField className="span2" label="Skills list" value={p.skills} onChange={skills => set(p.id, { skills })} placeholder={'HTML and CSS\nJavaScript\nDatabases'} hint={p.featured ? 'Shown as the numbered list on the featured card. One per line.' : 'Optional bullet list under “Explore the skills”. One per line.'}/>
+          <SkillsField featured={p.featured} skills={p.skills} onChange={skills => set(p.id, { skills })}/>
+          {p.featured && <>
+            <ImageField className="span2" label="Picture" value={p.image} onChange={image => set(p.id, { image })} cover hint="Optional. A photo of a learner works best (portrait, at least 700 px wide). Leave empty to show the built-in illustration."/>
+            {p.image && <TextField className="span2" label="Picture description (alt text)" value={p.imageAlt} max={200} onChange={imageAlt => set(p.id, { imageAlt })} hint="Describe the photo for screen readers, e.g. “A student practising on a laptop at MPIITECH”."/>}
+          </>}
           <Toggle label="Featured “Start here” card" hint="Shows this pathway as the large card above the others." checked={p.featured} onChange={featured => set(p.id, { featured })}/>
           <Toggle label="“Email me when this programme starts” form" hint="Lets visitors request an update for this pathway." checked={p.notify} onChange={notify => set(p.id, { notify })}/>
         </div></div>}
@@ -55,4 +59,26 @@ export default function PathwaysEditor({ initial, interest }: { initial: Pathway
     <button className="btn ghost" onClick={add}>+ Add a pathway</button>
     <SaveBar editor={editor}/>
   </>;
+}
+
+const ICON_LABELS: Record<SkillIcon, string> = { auto: 'Automatic', computer: 'Computer', documents: 'Documents', internet: 'Internet & safety', code: 'Coding', network: 'Network', data: 'Data & charts', ai: 'AI', security: 'Security', design: 'Design', book: 'Book' };
+
+function SkillsField({ skills, onChange, featured }: { skills: PathwaySkill[]; onChange: (s: PathwaySkill[]) => void; featured: boolean }) {
+  const update = (i: number, patch: Partial<PathwaySkill>) => onChange(skills.map((s, j) => j === i ? { ...s, ...patch } : s));
+  const move = (i: number, by: number) => { const next = [...skills]; const [item] = next.splice(i, 1); next.splice(i + by, 0, item); onChange(next); };
+  return <div className="f span2"><span>Skills</span>
+    <small>{featured ? 'Shown as colourful numbered cards on the featured card. Four skills fit best.' : 'Optional list under “Explore the skills”.'}</small>
+    {skills.map((s, i) => <div key={i} className="skill-row">
+      <span className="badge orange">{String(i + 1).padStart(2, '0')}</span>
+      <input className="input" value={s.title} maxLength={200} placeholder="Skill title" aria-label={`Skill ${i + 1} title`} onChange={e => update(i, { title: e.target.value })}/>
+      <input className="input" value={s.description} maxLength={300} placeholder="Short description (optional)" aria-label={`Skill ${i + 1} description`} onChange={e => update(i, { description: e.target.value })}/>
+      <select className="input" value={s.icon} aria-label={`Skill ${i + 1} icon`} onChange={e => update(i, { icon: e.target.value as SkillIcon })}>{SKILL_ICONS.map(k => <option key={k} value={k}>{ICON_LABELS[k]}</option>)}</select>
+      <div className="row" style={{ gap: 2, flexWrap: 'nowrap' }}>
+        <button type="button" className="icon-btn" aria-label="Move up" disabled={i === 0} onClick={() => move(i, -1)}>▲</button>
+        <button type="button" className="icon-btn" aria-label="Move down" disabled={i === skills.length - 1} onClick={() => move(i, 1)}>▼</button>
+        <button type="button" className="icon-btn" aria-label="Remove skill" onClick={() => onChange(skills.filter((_, j) => j !== i))}>✕</button>
+      </div>
+    </div>)}
+    <div><button type="button" className="btn ghost sm" disabled={skills.length >= 20} onClick={() => onChange([...skills, { title: '', description: '', icon: 'auto' }])}>+ Add skill</button></div>
+  </div>;
 }
