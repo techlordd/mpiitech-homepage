@@ -46,6 +46,14 @@ export default function BrandingEditor({ initial }: { initial: Branding }) {
         {b.aboutImageUrl && <TextField label="Picture description (alt text)" value={b.aboutImageAlt} onChange={aboutImageAlt => update({ aboutImageAlt })} max={200} hint="e.g. “Three students working together on a laptop at MPIITECH”."/>}
       </div>
     </div>
+    <div className="card">
+      <h2>“Your training. Our center.” picture</h2>
+      <p>Shown in the center hire section of the home page. A wide photo of your training room or a class in session works best (at least 900 px). Leave empty to show the built-in illustration.</p>
+      <div className="stack">
+        <ImageField label="Center hire picture" value={b.hireImageUrl} onChange={hireImageUrl => update({ hireImageUrl })} cover hint="JPG, PNG or WebP, up to 4 MB."/>
+        {b.hireImageUrl && <TextField label="Center hire picture description (alt text)" value={b.hireImageAlt} onChange={hireImageAlt => update({ hireImageAlt })} max={200} hint="e.g. “The MPIITECH computer training room”."/>}
+      </div>
+    </div>
     <SaveBar editor={editor}/>
   </>;
 }

@@ -33,7 +33,7 @@ export function EmailForm({ kind, programme, label }: { kind: 'programme' | 'new
 }
 
 /** Renders the enquiry and contact forms from the definitions managed in the admin dashboard. */
-export function DynamicForm({ def }: { def: FormDef }) {
+export function DynamicForm({ def, initial }: { def: FormDef; initial?: Record<string, string> }) {
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -54,7 +54,7 @@ export function DynamicForm({ def }: { def: FormDef }) {
       const fields = section.fields.filter(f => shown.has(f.id));
       if (!fields.length) return null;
       return <fieldset key={section.id} className={section.title ? '' : 'untitled'}>{section.title && <legend>{section.title}</legend>}
-        <div className="form-grid">{fields.map(f => <Field key={f.id} field={f} formId={def.id}/>)}</div>
+        <div className="form-grid">{fields.map(f => <Field key={`${f.id}-${initial?.[f.key] ?? ''}`} field={f} formId={def.id} initial={initial?.[f.key]}/>)}</div>
       </fieldset>;
     })}
     <label className="check consent"><input type="checkbox" name="consent" value="yes" required/><span>{def.consentText}</span></label>
@@ -64,7 +64,7 @@ export function DynamicForm({ def }: { def: FormDef }) {
   </form>;
 }
 
-function Field({ field: f, formId }: { field: FormField; formId: string }) {
+function Field({ field: f, formId, initial }: { field: FormField; formId: string; initial?: string }) {
   const required = f.required || f.locked;
   const id = `${formId}-${f.key}`;
   const help = f.help ? <small id={`${id}-help`}>{f.help}</small> : null;
@@ -74,7 +74,7 @@ function Field({ field: f, formId }: { field: FormField; formId: string }) {
   const common = { id, name: f.key, required, placeholder: f.placeholder || undefined, 'aria-describedby': describedBy };
   let control;
   if (f.type === 'textarea') control = <textarea {...common} maxLength={3000}/>;
-  else if (f.type === 'select') control = <select {...common} defaultValue=""><option value="" disabled>{f.placeholder || 'Select an option'}</option>{f.options.map(o => <option key={o}>{o}</option>)}</select>;
+  else if (f.type === 'select') control = <select {...common} defaultValue={initial && f.options.includes(initial) ? initial : ''}><option value="" disabled>{f.placeholder || 'Select an option'}</option>{f.options.map(o => <option key={o}>{o}</option>)}</select>;
   else control = <input {...common} type={f.type} maxLength={f.type === 'email' ? 254 : 200} min={f.type === 'number' ? f.min ?? undefined : undefined} max={f.type === 'number' ? f.max ?? undefined : undefined}/>;
   return <div className={`field-wrap ${width}`}><label className="field" htmlFor={id}>{f.label}{required && <b> *</b>}</label>{control}{help}</div>;
 }

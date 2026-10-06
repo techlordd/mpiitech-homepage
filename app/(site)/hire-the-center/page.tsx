@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { DynamicForm } from '@/components/forms';
-import { HIRE_USES, UseIcon } from '@/components/hire';
+import { HIRE_USES, UseCard } from '@/components/hire';
 import { ArrowIcon } from '@/components/illustrations';
 import { pageMetadata } from '@/lib/seo';
 import { getContent } from '@/lib/site';
@@ -19,8 +19,11 @@ const steps = [
 ];
 const checklist = ['Your organisation and a contact person', 'Type of training or assessment', 'Number of participants', 'Preferred dates and session times', 'Computers and other equipment needed', 'Your budget range (optional)'];
 
-export default async function HirePage() {
-  const content = await getContent();
+export default async function HirePage({ searchParams }: { searchParams: Promise<{ use?: string }> }) {
+  const [content, { use }] = await Promise.all([getContent(), searchParams]);
+  // Cards link here with ?use=… so the matching “training or assessment type” is preselected.
+  const purpose = content.forms.enquiry.sections.flatMap(s => s.fields).find(f => f.key === 'purpose');
+  const initial = use && purpose?.options.includes(use) ? { purpose: use } : undefined;
   const { contact, branding } = content;
   const whatsapp = contact.whatsapp.replace(/[^\d]/g, '');
   return <main id="hire-the-center">
@@ -36,7 +39,7 @@ export default async function HirePage() {
 
     <section className="section pale" id="uses"><div className="wrap">
       <div className="hire-section-head"><span className="eyebrow">What you can use it for</span><h2>A training space for every kind of group.</h2></div>
-      <ul className="use-cards">{HIRE_USES.map(u => <li key={u.title} className={`use-card use-card-${u.tone}`}><UseIcon use={u}/><h3>{u.title}</h3><p>{u.text}</p></li>)}</ul>
+      <ul className="use-cards">{HIRE_USES.map(u => <UseCard key={u.title} use={u}/>)}</ul>
     </div></section>
 
     <section className="section"><div className="wrap">
@@ -61,7 +64,7 @@ export default async function HirePage() {
           </ul>
         </div>
       </aside>
-      <DynamicForm def={content.forms.enquiry}/>
+      <DynamicForm def={content.forms.enquiry} initial={initial}/>
     </div></section>
   </main>;
 }
