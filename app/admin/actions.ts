@@ -69,7 +69,7 @@ const verification = text(400).transform(v => (v.match(/content\s*=\s*["']([^"']
 const brandingSchema = z.object({
   siteName: required(80), tagline: text(120), logoUrl: link.pipe(z.string().min(1, 'A logo is required')), logoAlt: required(120),
   faviconUrl: link, heroImageUrl: link.pipe(z.string().min(1, 'A hero image is required')), heroImageAlt: required(200),
-  heroCaption: text(120), heroCaptionLabel: text(80), aboutImageUrl: link, aboutImageAlt: text(200), hireImageUrl: link, hireImageAlt: text(200), topbarText: text(140), footerText: text(200)
+  heroCaption: text(120), heroCaptionLabel: text(80), aboutImageUrl: link, aboutImageAlt: text(200), topbarText: text(140), footerText: text(200)
 });
 export async function saveBranding(input: unknown) {
   return guarded(async () => { await saveSection('branding', brandingSchema.parse(input)); });

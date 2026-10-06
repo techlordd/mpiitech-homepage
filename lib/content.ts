@@ -13,8 +13,6 @@ export type Branding = {
   heroCaptionLabel: string;
   aboutImageUrl: string;
   aboutImageAlt: string;
-  hireImageUrl: string;
-  hireImageAlt: string;
   topbarText: string;
   footerText: string;
 };
@@ -171,8 +169,6 @@ export const DEFAULT_CONTENT: SiteContent = {
     heroCaptionLabel: 'MPIITECH center, Modakeke',
     aboutImageUrl: '',
     aboutImageAlt: '',
-    hireImageUrl: '',
-    hireImageAlt: '',
     topbarText: 'An initiative of MPI, USA & Canada',
     footerText: 'An initiative of MPI, USA & Canada.'
   },
