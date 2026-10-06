@@ -38,14 +38,6 @@ export default function BrandingEditor({ initial }: { initial: Branding }) {
         </div>
       </div>
     </div>
-    <div className="card">
-      <h2>“Built around our community” picture</h2>
-      <p>Shown under the About text on the home page. A real photo of your learners works best — wide or square, at least 900 px, ideally with a plain or soft background. Leave empty to show the built-in illustration.</p>
-      <div className="stack">
-        <ImageField label="About section picture" value={b.aboutImageUrl} onChange={aboutImageUrl => update({ aboutImageUrl })} cover hint="JPG, PNG or WebP, up to 4 MB. Get permission from parents or guardians before publishing photos of children."/>
-        {b.aboutImageUrl && <TextField label="Picture description (alt text)" value={b.aboutImageAlt} onChange={aboutImageAlt => update({ aboutImageAlt })} max={200} hint="e.g. “Three students working together on a laptop at MPIITECH”."/>}
-      </div>
-    </div>
     <SaveBar editor={editor}/>
   </>;
 }
