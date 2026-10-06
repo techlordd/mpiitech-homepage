@@ -419,7 +419,24 @@ export function pathwayColor(p: Pick<Pathway, 'color'>, index: number): Exclude<
   return p.color !== 'auto' && PATHWAY_COLORS.includes(p.color) ? p.color : AUTO_COLORS[index % AUTO_COLORS.length];
 }
 
-/** Where “Apply now” goes: the pathway’s own link, else the application portal, else the contact page. */
+/**
+ * A page on the portal, from the one setting that says where the portal is.
+ * Built from the setting's origin, so it works whether NEXT_PUBLIC_PORTAL_URL
+ * was entered as the bare address or with a path on the end. Null when it is
+ * not set (or is not an address), so callers fall back rather than link nowhere.
+ */
+export function portalPage(path: string): string | null {
+  const base = process.env.NEXT_PUBLIC_PORTAL_URL;
+  if (!base) return null;
+  try { return new URL(path, new URL(base).origin).toString(); } catch { return null; }
+}
+
+/**
+ * Where “Apply now” goes: the pathway’s own link, else the portal’s application
+ * form, else the contact page. The form, not the portal’s front door — that is
+ * a sign-in screen, and somebody applying for the first time has nothing to
+ * sign in with.
+ */
 export function applyLink(p: Pick<Pathway, 'applyUrl'>) {
-  return p.applyUrl || process.env.NEXT_PUBLIC_PORTAL_URL || '/contact';
+  return p.applyUrl || portalPage('/apply') || '/contact';
 }

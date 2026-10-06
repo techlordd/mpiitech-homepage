@@ -1,4 +1,5 @@
 import { loadContent } from '@/lib/site';
+import { portalPage } from '@/lib/content';
 import { store } from '@/lib/store';
 import { PageHead } from '../../ui';
 import PathwaysEditor from './editor';
@@ -11,6 +12,6 @@ export default async function PathwaysPage() {
   for (const s of interest.items) counts[s.summary] = (counts[s.summary] ?? 0) + 1;
   return <>
     <PageHead title="Pathways" description="The programmes shown in the “Find your starting point” section of the home page. Add, edit, reorder, hide or remove them."/>
-    <PathwaysEditor initial={pathways} interest={counts} portalUrl={process.env.NEXT_PUBLIC_PORTAL_URL ?? ''}/>
+    <PathwaysEditor initial={pathways} interest={counts} portalUrl={portalPage('/apply') ?? ''}/>
   </>;
 }
