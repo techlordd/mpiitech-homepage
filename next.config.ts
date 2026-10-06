@@ -64,9 +64,17 @@ const nextConfig: NextConfig = {
   ] }]; },
   async redirects() {
     return [
+      // Two rules rather than one `/:rest*`: with nothing after the page, the
+      // single rule produced `/reset-password/` on Vercel, which the portal then
+      // had to redirect again to drop the slash — a second hop on every old link.
       {
-        source: `/:page(${forwarded.join('|')})/:rest*`,
-        destination: `${PORTAL}/:page/:rest*`,
+        source: `/:page(${forwarded.join('|')})`,
+        destination: `${PORTAL}/:page`,
+        permanent: false,
+      },
+      {
+        source: `/:page(${forwarded.join('|')})/:rest+`,
+        destination: `${PORTAL}/:page/:rest+`,
         permanent: false,
       },
       // The system's two outside-facing endpoints. The landing site's own
