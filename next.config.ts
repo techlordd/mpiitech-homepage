@@ -1,3 +1,5 @@
+import { readdirSync } from 'node:fs';
+import path from 'node:path';
 import type { NextConfig } from 'next';
 
 /**
@@ -11,8 +13,13 @@ import type { NextConfig } from 'next';
  * /hire-the-center, /privacy, /admin, /api/contact, /media) are not on it, so
  * nothing here can take over a page of the landing site.
  *
- * Temporary (307), so browsers do not remember it: if this site later wants
- * one of these addresses for itself, taking it off the list is enough.
+ * **A page this site builds always wins.** Next.js applies redirects before it
+ * looks for pages, so a /login page added here later would otherwise never be
+ * shown — every visitor would quietly land on the portal instead. So the list
+ * is filtered at build time against the route folders this site actually has
+ * (`ownPages()`): create app/(site)/login and /login stops forwarding on the
+ * next deploy, with nothing to remember. Temporary (307) for the same reason —
+ * browsers do not remember it, so the change takes effect at once.
  */
 const PORTAL = 'https://portal.mpiitech.com';
 
@@ -31,6 +38,23 @@ const PORTAL_PAGES = [
   'sponsors', 'staff', 'summary', 'users', 'visitors',
 ];
 
+/** Every top-level address this site serves itself, route groups looked through. */
+function ownPages(): Set<string> {
+  const found = new Set<string>();
+  const walk = (dir: string) => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      if (!entry.isDirectory()) continue;
+      if (entry.name.startsWith('(')) walk(path.join(dir, entry.name));
+      else found.add(entry.name);
+    }
+  };
+  walk(path.join(process.cwd(), 'app'));
+  return found;
+}
+
+const own = ownPages();
+const forwarded = PORTAL_PAGES.filter(page => !own.has(page));
+
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   async headers() { return [{ source: '/(.*)', headers: [
@@ -41,7 +65,7 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
-        source: `/:page(${PORTAL_PAGES.join('|')})/:rest*`,
+        source: `/:page(${forwarded.join('|')})/:rest*`,
         destination: `${PORTAL}/:page/:rest*`,
         permanent: false,
       },
