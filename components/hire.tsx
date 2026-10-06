@@ -43,22 +43,13 @@ export function UseCard({ use: u }: { use: Use }) {
   </li>;
 }
 
-/** Compact center hire summary for the home page; the full details and form live on /hire-the-center. */
-export function HireTeaser({ siteName }: { siteName: string }) {
-  return <section id="hire" className="section hire-teaser-section"><div className="wrap">
-    <div className="hire-teaser">
-      <div className="hire-teaser-text">
-        <span className="eyebrow">A space for your organisation</span>
-        <h2>Your training.<br/><em>Our center.</em></h2>
-        <p>Hire the {siteName} center for organised training, assessments, and workforce development in Modakeke. Tell us what you need and the team will confirm availability, suitability, and pricing.</p>
-        <div className="hire-teaser-actions">
-          <Link className="pill-button" href="/hire-the-center#enquiry">Enquire about center hire<span className="pill-arrow"><ArrowIcon/></span></Link>
-          <Link className="hire-more" href="/hire-the-center">See how it works</Link>
-        </div>
-      </div>
-      <ul className="hire-uses" aria-label="What organisations use the center for">
-        {HIRE_USES.map(u => <li key={u.title}><UseIcon use={u}/>{u.title}</li>)}
-      </ul>
-    </div>
+/** Home page center hire section: heading, the six use cards, and a link to the enquiry form on /hire-the-center. */
+export function HireSection({ siteName }: { siteName: string }) {
+  return <section id="hire" className="section pale"><div className="wrap">
+    <div className="section-heading"><div><span className="eyebrow">A space for your organisation</span><h2>Your training.<br/>Our center.</h2></div>
+      <p>Hire the {siteName} center for organised training, assessments, and workforce development in Modakeke.</p></div>
+    <ul className="use-cards">{HIRE_USES.map(u => <UseCard key={u.title} use={u}/>)}</ul>
+    <div className="hire-note"><p>Tell us your preferred dates, group size, equipment, and assessment needs. The team will confirm availability, suitability, and pricing.</p>
+      <Link className="pill-button" href="/hire-the-center#enquiry">Enquire about center hire<span className="pill-arrow"><ArrowIcon/></span></Link></div>
   </div></section>;
 }
