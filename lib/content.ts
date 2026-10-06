@@ -55,6 +55,10 @@ export type CustomCode = { head: string; bodyStart: string; bodyEnd: string };
 export const SKILL_ICONS = ['auto', 'computer', 'documents', 'internet', 'code', 'network', 'data', 'ai', 'security', 'design', 'book'] as const;
 export type SkillIcon = typeof SKILL_ICONS[number];
 export type PathwaySkill = { title: string; description: string; icon: SkillIcon };
+export const PATHWAY_COLORS = ['auto', 'blue', 'green', 'purple', 'orange', 'teal', 'pink'] as const;
+export type PathwayColor = typeof PATHWAY_COLORS[number];
+export const PATHWAY_ART = ['auto', 'web', 'network', 'data', 'ai', 'general'] as const;
+export type PathwayArt = typeof PATHWAY_ART[number];
 
 export type Pathway = {
   id: string;
@@ -65,6 +69,8 @@ export type Pathway = {
   skills: PathwaySkill[];
   image: string;
   imageAlt: string;
+  color: PathwayColor;
+  art: PathwayArt;
   featured: boolean;
   visible: boolean;
   notify: boolean;
@@ -197,7 +203,7 @@ export const DEFAULT_CONTENT: SiteContent = {
     {
       id: 'digital-foundations', title: 'Digital Foundations', headline: 'Get comfortable with computers.',
       description: 'Build confidence using a computer for school, work, and everyday life. A practical foundation for secondary school students and beginners.',
-      details: '', image: '', imageAlt: '',
+      details: '', image: '', imageAlt: '', color: 'auto', art: 'auto',
       skills: [
         { title: 'Computer parts, files, and folders', description: 'Learn the basic parts of a computer and how to manage your files.', icon: 'computer' },
         { title: 'Microsoft Office and productivity tools', description: 'Create documents, spreadsheets, and presentations with ease.', icon: 'documents' },
@@ -209,25 +215,45 @@ export const DEFAULT_CONTENT: SiteContent = {
     {
       id: 'full-stack-web-development', title: 'Full-Stack Web Development', headline: '',
       description: 'Explore how websites work, from what a visitor sees to the systems behind the page.',
-      details: 'Learn the foundations of HTML, CSS, JavaScript, databases, and full-stack development through practical projects.', skills: [], image: '', imageAlt: '',
+      details: 'Learn the foundations of HTML, CSS, JavaScript, databases, and full-stack development through practical projects.', image: '', imageAlt: '', color: 'blue', art: 'web',
+      skills: [
+        { title: 'HTML & CSS', description: 'Build and style your own web pages.', icon: 'code' },
+        { title: 'JavaScript', description: 'Make pages interactive with buttons, games, and forms.', icon: 'code' },
+        { title: 'Databases', description: 'Store and organise the information behind a website.', icon: 'data' }
+      ],
       featured: false, visible: true, notify: true
     },
     {
       id: 'network-administration-security', title: 'Network Administration & Security', headline: '',
       description: 'Develop skills to connect computers, support networks, and protect digital systems.',
-      details: 'Explore computer networks, administration, troubleshooting, and the fundamentals of digital security.', skills: [], image: '', imageAlt: '',
+      details: 'Explore computer networks, administration, troubleshooting, and the fundamentals of digital security.', image: '', imageAlt: '', color: 'green', art: 'network',
+      skills: [
+        { title: 'Computer Networks', description: 'See how computers connect and share information.', icon: 'network' },
+        { title: 'System Administration', description: 'Set up, manage, and troubleshoot computers and users.', icon: 'computer' },
+        { title: 'Cyber Security', description: 'Protect devices, data, and people from online threats.', icon: 'security' }
+      ],
       featured: false, visible: true, notify: true
     },
     {
       id: 'data-analytics-python', title: 'Data Analytics with Python', headline: '',
       description: 'Learn how to work with data and turn information into useful insights.',
-      details: 'Build skills in Python, data preparation, analysis, and communicating findings through practical exercises.', skills: [], image: '', imageAlt: '',
+      details: 'Build skills in Python, data preparation, analysis, and communicating findings through practical exercises.', image: '', imageAlt: '', color: 'purple', art: 'data',
+      skills: [
+        { title: 'Python Basics', description: 'Write your first programs with a beginner-friendly language.', icon: 'code' },
+        { title: 'Data Analysis', description: 'Clean, sort, and explore real data to find answers.', icon: 'data' },
+        { title: 'Data Visualization', description: 'Turn numbers into clear charts and stories.', icon: 'data' }
+      ],
       featured: false, visible: true, notify: true
     },
     {
       id: 'ai-engineering', title: 'AI Engineering', headline: '',
       description: 'Build the programming and practical AI skills to create useful intelligent applications and agents.',
-      details: 'Explore programming foundations, AI applications, and practical projects that solve everyday problems.', skills: [], image: '', imageAlt: '',
+      details: 'Explore programming foundations, AI applications, and practical projects that solve everyday problems.', image: '', imageAlt: '', color: 'orange', art: 'ai',
+      skills: [
+        { title: 'AI Fundamentals', description: 'Understand what AI is, how it learns, and how to use it responsibly.', icon: 'ai' },
+        { title: 'Prompt Engineering', description: 'Give AI tools clear instructions to get useful results.', icon: 'ai' },
+        { title: 'Build AI Projects', description: 'Create simple apps and assistants that solve real problems.', icon: 'code' }
+      ],
       featured: false, visible: true, notify: true
     }
   ],
@@ -368,4 +394,17 @@ const ICON_KEYWORDS: [Exclude<SkillIcon, 'auto'>, RegExp][] = [
 export function skillIcon(skill: PathwaySkill): Exclude<SkillIcon, 'auto'> {
   if (skill.icon !== 'auto') return skill.icon;
   return ICON_KEYWORDS.find(([, re]) => re.test(skill.title))?.[0] ?? 'book';
+}
+
+const ART_KEYWORDS: [Exclude<PathwayArt, 'auto'>, RegExp][] = [
+  ['ai', /\bai\b|artificial|machine learning|intelligen/i], ['data', /data|analy|python|statist/i],
+  ['network', /network|secur|cyber|cloud|system admin/i], ['web', /web|full.?stack|front.?end|back.?end|software|app|program|cod/i]
+];
+export function pathwayArt(p: Pick<Pathway, 'art' | 'title'>): Exclude<PathwayArt, 'auto'> {
+  if (p.art !== 'auto' && PATHWAY_ART.includes(p.art)) return p.art;
+  return ART_KEYWORDS.find(([, re]) => re.test(p.title))?.[0] ?? 'general';
+}
+const AUTO_COLORS: Exclude<PathwayColor, 'auto'>[] = ['blue', 'green', 'purple', 'orange'];
+export function pathwayColor(p: Pick<Pathway, 'color'>, index: number): Exclude<PathwayColor, 'auto'> {
+  return p.color !== 'auto' && PATHWAY_COLORS.includes(p.color) ? p.color : AUTO_COLORS[index % AUTO_COLORS.length];
 }

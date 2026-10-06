@@ -6,7 +6,7 @@ import { z } from 'zod';
 import {
   SESSION_COOKIE, UnauthorisedError, checkCredentials, clearLoginAttempts, createSessionValue, loginRateLimited, requireAdmin, adminConfigured
 } from '@/lib/auth';
-import { SKILL_ICONS, splitList, type ContentKey, type SiteContent } from '@/lib/content';
+import { PATHWAY_ART, PATHWAY_COLORS, SKILL_ICONS, splitList, type ContentKey, type SiteContent } from '@/lib/content';
 import { getEmailConfig, isEmail, refreshDeliveryStatus, sendEmail } from '@/lib/email';
 import { CONTENT_TAG, getEmailSettings, loadContent, saveContent, saveEmailSettings } from '@/lib/site';
 import { StorageUnavailableError, store, type SubmissionStatus } from '@/lib/store';
@@ -103,7 +103,7 @@ export async function saveCode(input: unknown) {
 const pathwaySchema = z.object({
   id: z.string().trim().regex(/^[a-z0-9-]{1,80}$/), title: required(120), headline: text(160), description: required(600), details: text(2000),
   skills: z.array(z.object({ title: text(200), description: text(300), icon: z.enum(SKILL_ICONS) })).max(20).transform(list => list.filter(x => x.title)),
-  image: link, imageAlt: text(200), featured: z.boolean(), visible: z.boolean(), notify: z.boolean()
+  image: link, imageAlt: text(200), color: z.enum(PATHWAY_COLORS), art: z.enum(PATHWAY_ART), featured: z.boolean(), visible: z.boolean(), notify: z.boolean()
 });
 const pathwaysSchema = z.array(pathwaySchema).max(30).superRefine((items, ctx) => {
   const titles = new Set<string>(); const ids = new Set<string>();

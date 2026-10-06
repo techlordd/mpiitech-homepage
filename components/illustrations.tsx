@@ -135,3 +135,89 @@ export function FoundationsIllustration() {
     </g>
   </svg>;
 }
+
+type SceneName = 'web' | 'network' | 'data' | 'ai' | 'general';
+const T = { fontFamily: 'Arial, sans-serif', fontWeight: 800 } as const;
+const blob = <path d="M60 46c40-40 140-46 196-10s52 128 14 178-120 54-180 36S-6 182 10 120 20 86 60 46z" fill="var(--t100)"/>;
+const sparks = (x: number, y: number, flip = false) => <g stroke="var(--t500)" strokeWidth="6" strokeLinecap="round" transform={`translate(${x} ${y}) scale(${flip ? -1 : 1} 1)`}><path d="M0 18 14 30M14 0l6 18M-6 40l16 2"/></g>;
+
+const scenes: Record<SceneName, React.ReactNode> = {
+  web: <>
+    {blob}{sparks(28, 112)}
+    <rect x="86" y="44" width="200" height="146" rx="16" fill="#1d2b44"/>
+    <path d="M86 60a16 16 0 0 1 16-16h168a16 16 0 0 1 16 16v10H86z" fill="#2c3d5c"/>
+    <circle cx="102" cy="57" r="4" fill="#ff6b5b"/><circle cx="115" cy="57" r="4" fill="#ffc53d"/><circle cx="128" cy="57" r="4" fill="#4fd17c"/>
+    <rect x="104" y="88" width="56" height="7" rx="3.5" fill="#5aa9ff"/><rect x="166" y="88" width="36" height="7" rx="3.5" fill="#ff7ab6"/>
+    <rect x="118" y="104" width="70" height="7" rx="3.5" fill="#ffc53d"/>
+    <rect x="118" y="120" width="44" height="7" rx="3.5" fill="#4fd17c"/><rect x="168" y="120" width="26" height="7" rx="3.5" fill="#5aa9ff"/>
+    <rect x="104" y="136" width="34" height="7" rx="3.5" fill="#ff7ab6"/>
+    <rect x="104" y="160" width="90" height="7" rx="3.5" fill="#5aa9ff" opacity=".6"/>
+    <g className="art-float"><rect x="214" y="132" width="92" height="88" rx="14" fill="#fff" stroke="#dfe7f1"/>
+      <rect x="226" y="144" width="68" height="12" rx="6" fill="var(--t500)"/><rect x="226" y="164" width="30" height="40" rx="6" fill="var(--t100)"/>
+      <rect x="262" y="164" width="32" height="8" rx="4" fill="#cfd9e5"/><rect x="262" y="178" width="26" height="8" rx="4" fill="#cfd9e5"/><rect x="262" y="194" width="32" height="10" rx="5" fill="#ff861f"/></g>
+    <circle cx="80" cy="60" r="40" fill="var(--t600)"/>
+    <path d="M66 46 52 60l14 14M94 46l14 14-14 14M85 42 75 78" stroke="#fff" strokeWidth="6.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+    <circle cx="300" cy="40" r="6" fill="#ffc53d"/><circle cx="44" cy="214" r="8" fill="var(--t500)" opacity=".5"/>
+  </>,
+  network: <>
+    {blob}{sparks(276, 34, true)}
+    <g fill="none" stroke="var(--t600)" strokeWidth="9" strokeLinecap="round"><path d="M70 64a46 46 0 0 1 64 0"/><path d="M84 80a24 24 0 0 1 36 0"/></g>
+    <circle cx="102" cy="96" r="8" fill="var(--t600)"/>
+    <rect x="64" y="116" width="150" height="46" rx="9" fill="#33475f"/><rect x="64" y="168" width="150" height="46" rx="9" fill="#2a3b50"/>
+    {[0, 52].map(dy => <g key={dy}>
+      <rect x="76" y={128 + dy} width="70" height="22" rx="4" fill="#1d2b44"/>
+      {[0, 1, 2, 3, 4, 5].map(i => <rect key={i} x={80 + i * 11} y={133 + dy} width="7" height="12" rx="1.5" fill="#5b6f86"/>)}
+      <circle cx="166" cy={139 + dy} r="4" fill="#4fd17c"/><circle cx="180" cy={139 + dy} r="4" fill="var(--t500)"/><circle cx="194" cy={139 + dy} r="4" fill="#ffc53d"/>
+    </g>)}
+    <path d="M90 214c0 18 30 14 30 30M120 214c0 14 40 10 40 30M150 214c4 12 40 4 46 30" stroke="var(--t500)" strokeWidth="4" fill="none" strokeLinecap="round"/>
+    <g className="art-float delay"><path d="M256 92l40 13v28c0 24-17 40-40 48-23-8-40-24-40-48v-28z" fill="var(--t600)"/>
+      <path d="M256 92v89c-23-8-40-24-40-48v-28z" fill="var(--t700)"/>
+      <rect x="244" y="132" width="24" height="20" rx="4" fill="#fff"/><path d="M249 132v-6a7 7 0 0 1 14 0v6" stroke="#fff" strokeWidth="4.5" fill="none"/>
+      <circle cx="256" cy="141" r="3" fill="var(--t700)"/></g>
+    <circle cx="36" cy="150" r="7" fill="#5aa9ff"/><circle cx="292" cy="214" r="6" fill="#ffc53d"/>
+  </>,
+  data: <>
+    {blob}{sparks(30, 40)}
+    <rect x="70" y="34" width="190" height="150" rx="18" fill="#fff" stroke="#e3e0f5" strokeWidth="2"/>
+    <rect x="88" y="52" width="70" height="9" rx="4.5" fill="#1d2b44"/><rect x="88" y="68" width="44" height="7" rx="3.5" fill="#cfd9e5"/>
+    {[[92, 48], [118, 70], [144, 56], [170, 86], [196, 66]].map(([x, h], i) => <rect key={x} x={x} y={166 - h} width="18" height={h} rx="4" fill={i === 3 ? 'var(--t600)' : 'var(--t500)'} opacity={i === 3 ? 1 : .55}/>)}
+    <path d="M96 112l26-16 26 10 26-24 28 8" stroke="#ff861f" strokeWidth="4" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+    <g className="art-float"><circle cx="262" cy="176" r="44" fill="#fff" stroke="#e3e0f5" strokeWidth="2"/>
+      <circle cx="262" cy="176" r="30" fill="var(--t100)"/><path d="M262 176V146a30 30 0 0 1 28 40z" fill="var(--t600)"/><path d="M262 176l28 10a30 30 0 0 1-20 18z" fill="#ffc53d"/></g>
+    <g className="art-float delay"><path d="M30 146h44l14 14v56a8 8 0 0 1-8 8H30a8 8 0 0 1-8-8v-62a8 8 0 0 1 8-8z" fill="#ffd34d"/>
+      <path d="M74 146v14h14z" fill="#f5b400"/><text x="31" y="200" {...T} fontSize="22" fill="#1d2b44">.py</text></g>
+    <circle cx="300" cy="64" r="6" fill="var(--t500)"/><circle cx="120" cy="224" r="7" fill="#5aa9ff" opacity=".6"/>
+  </>,
+  ai: <>
+    {blob}{sparks(22, 30)}{sparks(296, 150, true)}
+    <g stroke="#c2410c" strokeWidth="6" strokeLinecap="round">{[0, 1, 2].map(i => <path key={i} d={`M${82 + i * 24} 52v-14M${82 + i * 24} 170v14M48 ${86 + i * 24}h-14M166 ${86 + i * 24}h14`}/>)}</g>
+    <rect x="48" y="52" width="118" height="118" rx="26" fill="#ff7a12"/>
+    <rect x="48" y="52" width="118" height="118" rx="26" fill="url(#ai-sheen)"/>
+    <defs><linearGradient id="ai-sheen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#ffd08a" stopOpacity=".7"/><stop offset=".6" stopColor="#ff7a12" stopOpacity="0"/></linearGradient></defs>
+    <text x="107" y="128" textAnchor="middle" {...T} fontSize="52" fill="#fff">AI</text>
+    <g className="art-float">
+      <path d="M250 70v-16" stroke="#94a3b8" strokeWidth="4" strokeLinecap="round"/><circle cx="250" cy="50" r="7" fill="var(--t600)"/>
+      <rect x="198" y="70" width="104" height="80" rx="30" fill="#fff" stroke="#d7e0ea" strokeWidth="3"/>
+      <rect x="212" y="86" width="76" height="48" rx="20" fill="#1d2b44"/>
+      <circle cx="235" cy="108" r="8" fill="#5ad1ff"/><circle cx="265" cy="108" r="8" fill="#5ad1ff"/><path d="M240 122q10 8 20 0" stroke="#5ad1ff" strokeWidth="3.5" fill="none" strokeLinecap="round"/>
+      <rect x="186" y="98" width="12" height="26" rx="6" fill="#d7e0ea"/><rect x="302" y="98" width="12" height="26" rx="6" fill="#d7e0ea"/>
+      <rect x="214" y="156" width="72" height="56" rx="22" fill="#fff" stroke="#d7e0ea" strokeWidth="3"/>
+      <circle cx="250" cy="182" r="9" fill="var(--t500)"/>
+      <rect x="290" y="162" width="14" height="36" rx="7" fill="#fff" stroke="#d7e0ea" strokeWidth="3" transform="rotate(-24 297 180)"/>
+    </g>
+    <path d="M190 40c2 8 5 11 13 13-8 2-11 5-13 13-2-8-5-11-13-13 8-2 11-5 13-13z" fill="#ffc53d"/>
+    <circle cx="40" cy="214" r="7" fill="var(--t500)" opacity=".6"/>
+  </>,
+  general: <>
+    {blob}{sparks(30, 40)}
+    <path d="M160 82c-22-18-62-20-96-12v118c34-8 74-6 96 12z" fill="var(--t600)"/>
+    <path d="M160 82c22-18 62-20 96-12v118c-34-8-74-6-96 12z" fill="#ff861f"/>
+    <path d="M82 100c22-4 42-2 60 8M82 124c22-4 42-2 60 8M82 148c22-4 42-2 60 8M178 108c18-10 38-12 60-8M178 132c18-10 38-12 60-8M178 156c18-10 38-12 60-8" stroke="#fff" strokeWidth="5" strokeLinecap="round" opacity=".8" fill="none"/>
+    <path d="M262 40c2 9 5 12 14 14-9 2-12 5-14 14-2-9-5-12-14-14 9-2 12-5 14-14z" fill="#ffc53d"/>
+  </>
+};
+
+/** Illustration for a pathway card. Colours come from the card’s --t* custom properties. */
+export function PathwayScene({ name, label }: { name: SceneName; label: string }) {
+  return <svg className="path-art-svg" viewBox="0 0 320 250" role="img" aria-label={label}>{scenes[name]}</svg>;
+}
