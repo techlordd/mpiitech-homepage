@@ -17,7 +17,7 @@ export default function Header({ logoUrl, logoAlt, topbarText, portalUrl, sticky
     return () => window.removeEventListener('scroll', onScroll);
   }, [sticky]);
   const pathname = usePathname();
-  return <><div className="topbar"><div className="wrap"><span>{topbarText}</span><a href="https://modakeke.org" target="_blank" rel="noopener noreferrer">Visit Modakeke HQ</a></div></div>
+  return <><div className="topbar"><div className="wrap"><span>{topbarText}</span><a href="https://modakeke.org" target="_blank" rel="noopener noreferrer">Visit Modakeke.org</a></div></div>
   <header className={sticky ? `is-sticky${scrolled ? ' is-scrolled' : ''}` : undefined}><div className="wrap nav"><Link href="/" className="logo" aria-label={`${logoAlt} home`}>
     {/* eslint-disable-next-line @next/next/no-img-element -- logo can be any uploaded image */}
     <img src={logoUrl} alt={logoAlt} width={174} height={55}/></Link>
