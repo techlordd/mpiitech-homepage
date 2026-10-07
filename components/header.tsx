@@ -3,9 +3,9 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-type Props = { logoUrl: string; logoAlt: string; topbarText: string; portalUrl?: string; sticky?: boolean };
+type Props = { logoUrl: string; logoAlt: string; topbarText: string; portalUrl?: string; applyUrl?: string; sticky?: boolean };
 
-export default function Header({ logoUrl, logoAlt, topbarText, portalUrl, sticky = false }: Props) {
+export default function Header({ logoUrl, logoAlt, topbarText, portalUrl, applyUrl, sticky = false }: Props) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   // Adds a soft shadow once the sticky header is floating over the page.
@@ -25,6 +25,6 @@ export default function Header({ logoUrl, logoAlt, topbarText, portalUrl, sticky
   <nav id="main-nav" className={open ? 'open' : ''} aria-label="Main navigation" onClick={() => setOpen(false)}>
     <a href="/#programmes">Programmes</a><a href="/#about">About us</a><Link href="/hire-the-center" aria-current={pathname === '/hire-the-center' ? 'page' : undefined}>Hire the center</Link>
     <Link href="/contact" aria-current={pathname === '/contact' ? 'page' : undefined}>Contact us</Link>
-    <a href={portalUrl || '/#portal'}>Portal login</a><a className="button orange" href="/#apply">Apply now</a>
+    <a href={portalUrl || '/#portal'}>Portal login</a><a className="button orange" href={applyUrl || '/#apply'}>Apply now</a>
   </nav></div></header></>;
 }

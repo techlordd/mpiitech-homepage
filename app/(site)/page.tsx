@@ -6,6 +6,7 @@ import PathwayCard from '@/components/pathway-card';
 import StartCard from '@/components/start-card';
 import StepsSection from '@/components/steps-section';
 import { ArrowIcon } from '@/components/illustrations';
+import { portalPage } from '@/lib/content';
 import { organisationJsonLd, pageMetadata } from '@/lib/seo';
 import { getContent } from '@/lib/site';
 
@@ -37,7 +38,7 @@ export default async function Home() {
   ];
   return <main id="home">
 {jsonLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }}/>}
-<section className="hero"><div className="wrap hero-grid"><div><span className="eyebrow">Modakeke, Osun State, Nigeria</span><h1>Learn digital skills.<br/><em>Build your<br/>next chapter.</em></h1><p>From your first computer lesson to a career in technology. Learn, practise, and grow at {branding.siteName}. A training space for learners, schools, and organisations.</p><div className="actions"><a className="pill-button" href="#apply">Apply for a programme<span className="pill-arrow"><ArrowIcon/></span></a><a className="ghost-button" href="#programmes">Explore programmes</a></div><small>For students, aspiring professionals, and our community.</small></div>
+<section className="hero"><div className="wrap hero-grid"><div><span className="eyebrow">Modakeke, Osun State, Nigeria</span><h1>Learn digital skills.<br/><em>Build your<br/>next chapter.</em></h1><p>From your first computer lesson to a career in technology. Learn, practise, and grow at {branding.siteName}. A training space for learners, schools, and organisations.</p><div className="actions"><a className="pill-button" href={portalPage('/apply') || '#apply'}>Apply for a programme<span className="pill-arrow"><ArrowIcon/></span></a><a className="ghost-button" href="#programmes">Explore programmes</a></div><small>For students, aspiring professionals, and our community.</small></div>
 <figure className="hero-photo">{/* eslint-disable-next-line @next/next/no-img-element -- hero can be any uploaded image */}<img src={branding.heroImageUrl} alt={branding.heroImageAlt} fetchPriority="high"/>{(branding.heroCaption || branding.heroCaptionLabel) && <figcaption><strong>{branding.heroCaption}</strong><span>{branding.heroCaptionLabel}</span></figcaption>}</figure></div></section>
 <div className="benefits"><ul className="wrap">{benefits.map(x => <li key={x.title} className={`benefit tone-${x.tone}`}><span className="benefit-icon" aria-hidden="true"><svg viewBox="0 0 28 28">{x.icon}</svg></span><p><strong>{x.title}</strong><span>{x.text}</span></p></li>)}</ul></div>
 <section id="programmes" className="section pale"><div className="wrap"><div className="section-heading"><div><span className="eyebrow">Find your starting point</span><h2>A foundation today.<br/>More possibilities tomorrow.</h2></div><p>Start with everyday digital skills, or explore a specialist pathway. Check the application portal for available intakes, fees, and schedules.</p></div>
