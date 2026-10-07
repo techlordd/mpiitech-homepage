@@ -130,6 +130,15 @@ export type ContactInfo = {
   mapEmbedUrl: string;
 };
 
+export type EmailTemplate = { enabled: boolean; subject: string; body: string };
+
+/** Emails sent to subscribers. {programme}, {siteName} and {applyLink} are filled in when sending. */
+export type SubscriberMessages = {
+  programmeConfirm: EmailTemplate;
+  newsletterConfirm: EmailTemplate;
+  programmeNotice: EmailTemplate;
+};
+
 export type SiteContent = {
   branding: Branding;
   seo: Seo;
@@ -137,10 +146,11 @@ export type SiteContent = {
   pathways: Pathway[];
   forms: Record<FormId, FormDef>;
   contact: ContactInfo;
+  messages: SubscriberMessages;
 };
 
 export type ContentKey = keyof SiteContent;
-export const CONTENT_KEYS: ContentKey[] = ['branding', 'seo', 'code', 'pathways', 'forms', 'contact'];
+export const CONTENT_KEYS: ContentKey[] = ['branding', 'seo', 'code', 'pathways', 'forms', 'contact', 'messages'];
 
 export type EmailSettings = {
   fromName: string;
@@ -352,6 +362,23 @@ export const DEFAULT_CONTENT: SiteContent = {
     hours: 'Monday – Friday: 9am – 5pm\nSaturday: by appointment',
     showMap: true,
     mapEmbedUrl: ''
+  },
+  messages: {
+    programmeConfirm: {
+      enabled: true,
+      subject: 'You’re on the list for {programme}',
+      body: 'Hello,\n\nThank you for your interest in {programme} at {siteName}. You’re on the list, and we’ll email you as soon as applications open.\n\nYou’re receiving this because this email address was entered on our website. If that wasn’t you, you can ignore this message, or reply and we’ll remove it.\n\n{siteName}'
+    },
+    newsletterConfirm: {
+      enabled: true,
+      subject: 'Welcome to {siteName} updates',
+      body: 'Hello,\n\nThank you for subscribing to updates from {siteName}. We’ll send you programme announcements, learning opportunities, and news from the center.\n\nYou’re receiving this because this email address was entered on our website. If that wasn’t you, or you change your mind, just reply and we’ll remove it.\n\n{siteName}'
+    },
+    programmeNotice: {
+      enabled: true,
+      subject: '{programme} is now open for applications',
+      body: 'Hello,\n\nGood news! You asked us to let you know when {programme} starts at {siteName}. Applications are now open.\n\nApply here: {applyLink}\n\nPlaces may be limited, so we recommend applying soon. Reply to this email if you have any questions.\n\n{siteName}'
+    }
   }
 };
 
@@ -439,4 +466,13 @@ export function portalPage(path: string): string | null {
  */
 export function applyLink(p: Pick<Pathway, 'applyUrl'>) {
   return p.applyUrl || portalPage('/apply') || '/contact';
+}
+
+/** Fills {programme}, {siteName}, {applyLink} and {name} in a subscriber email. */
+export function fillTemplate(text: string, values: { programme?: string; siteName: string; applyLink?: string; name?: string }) {
+  return text
+    .replace(/\{programme\}/g, values.programme ?? '')
+    .replace(/\{siteName\}/g, values.siteName)
+    .replace(/\{applyLink\}/g, values.applyLink ?? '')
+    .replace(/\{name\}/g, values.name || 'there');
 }

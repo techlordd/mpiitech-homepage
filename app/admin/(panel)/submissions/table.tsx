@@ -5,7 +5,7 @@ import { deleteSubmissions, updateSubmission } from '../../actions';
 import { STATUS_LABELS, formatDate } from '../../format';
 import { Status, useAction } from '../../ui';
 
-const statusClass: Record<string, string> = { new: 'orange', in_progress: 'blue', closed: 'green', spam: 'red' };
+const statusClass: Record<string, string> = { new: 'orange', in_progress: 'blue', notified: 'green', closed: 'green', spam: 'red' };
 const emailBadge = (s: string) => s === 'sent' ? <span className="badge green">Emailed</span> : s === 'pending' ? <span className="badge">Sending</span> : s ? <span className="badge red" title="See Email & delivery log">Email {s === 'not_configured' ? 'not configured' : 'failed'}</span> : null;
 
 export default function SubmissionsTable({ items, openId, simple }: { items: Submission[]; openId?: string; simple: boolean }) {

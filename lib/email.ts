@@ -1,4 +1,5 @@
 // Sends email through Resend and records every attempt in the delivery log.
+import { createHash } from 'crypto';
 import { Resend } from 'resend';
 import { z } from 'zod';
 import { splitList } from './content';
@@ -73,6 +74,44 @@ export async function sendEmail(message: Message, config?: EmailConfig): Promise
     await log({ ...base, status: 'failed', providerId: '', error: text });
     return { ok: false, reason: 'failed', error: text };
   }
+}
+
+export type BulkResult = { sent: string[]; failed: string[]; error: string };
+const BATCH_SIZE = 50;
+
+/**
+ * Sends the same plain-text email to many people, one email each so nobody sees
+ * anyone else's address. Uses Resend's batch API in groups of 50 and stops at the
+ * first rejected group (for example when the plan's daily limit is reached), so
+ * the people not reached can be sent to later.
+ */
+export async function sendBulk(message: { kind: string; subject: string; text: string; idempotencyKey: string }, recipients: string[]): Promise<BulkResult> {
+  const c = await getEmailConfig();
+  const problems = c.problems.filter(p => !p.includes('recipient'));
+  if (problems.length) return { sent: [], failed: recipients, error: `Email is not configured: ${problems.join(' ')}` };
+  const resend = new Resend(c.apiKey);
+  const sent: string[] = [];
+  for (let i = 0; i < recipients.length; i += BATCH_SIZE) {
+    const group = recipients.slice(i, i + BATCH_SIZE);
+    const failWith = async (error: string) => {
+      for (const to of group) await log({ kind: message.kind, to: [to], subject: message.subject, status: 'failed', providerId: '', error });
+      return { sent, failed: recipients.slice(i), error };
+    };
+    try {
+      const { data, error } = await resend.batch.send(
+        group.map(to => ({ from: c.from, to: [to], subject: message.subject, text: message.text })),
+        // Keyed by who is in the group, so a repeated click resends nothing while a retry for the people not yet reached still goes out.
+        { idempotencyKey: `${message.idempotencyKey}-${createHash('sha256').update(group.join('\n')).digest('hex').slice(0, 24)}` }
+      );
+      if (error) return failWith(`${error.name}: ${error.message}`);
+      for (const [n, to] of group.entries()) await log({ kind: message.kind, to: [to], subject: message.subject, status: 'sent', providerId: data?.data?.[n]?.id ?? '', error: '' });
+      sent.push(...group);
+    } catch (error) {
+      return failWith(error instanceof Error ? error.message : 'Unknown error');
+    }
+    if (i + BATCH_SIZE < recipients.length) await new Promise(r => setTimeout(r, 600)); // stay under Resend's request rate limit
+  }
+  return { sent, failed: [], error: '' };
 }
 
 /** Asks Resend for the latest delivery event (delivered, bounced, opened…) of logged emails. */

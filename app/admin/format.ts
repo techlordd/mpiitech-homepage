@@ -1,5 +1,5 @@
 export const FORM_LABELS: Record<string, string> = { enquiry: 'Center hire', contact: 'Contact', programme: 'Programme', newsletter: 'Newsletter' };
-export const STATUS_LABELS: Record<string, string> = { new: 'New', in_progress: 'In progress', closed: 'Closed', spam: 'Spam' };
+export const STATUS_LABELS: Record<string, string> = { new: 'New', in_progress: 'In progress', notified: 'Notified', closed: 'Closed', spam: 'Spam' };
 
 export function formatDate(iso: string) {
   if (!iso) return '';

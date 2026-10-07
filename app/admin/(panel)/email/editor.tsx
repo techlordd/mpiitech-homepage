@@ -1,8 +1,9 @@
 'use client';
 import { useState } from 'react';
+import type { EmailTemplate, SubscriberMessages } from '@/lib/content';
 import type { EmailConfig } from '@/lib/email';
-import { clearEmailLog, refreshEmailLog, saveEmail, sendTestEmail } from '../../actions';
-import { SaveBar, Status, TextField, Toggle, useAction, useEditor } from '../../ui';
+import { clearEmailLog, refreshEmailLog, saveEmail, saveMessages, sendTestEmail } from '../../actions';
+import { SaveBar, Status, TextArea, TextField, Toggle, useAction, useEditor } from '../../ui';
 
 type Settings = { fromName: string; fromEmail: string; recipients: string; apiKey: string; clearApiKey: boolean };
 
@@ -51,5 +52,28 @@ export function LogActions() {
       <button className="btn danger sm" disabled={action.busy} onClick={() => { if (confirm('Clear the whole delivery log? Submissions are not affected.')) action.run(clearEmailLog); }}>Clear log</button>
     </div>
     {action.status && <span className="small" style={{ color: action.status.ok ? 'var(--green)' : 'var(--red)' }}>{action.status.text}</span>}
+  </div>;
+}
+
+const TEMPLATES: { key: keyof SubscriberMessages; title: string; when: string; toggle?: string }[] = [
+  { key: 'programmeConfirm', title: 'Programme sign-up confirmation', when: 'Sent to someone who asks to be emailed when a programme starts.', toggle: 'Send this confirmation' },
+  { key: 'newsletterConfirm', title: 'Newsletter sign-up confirmation', when: 'Sent to someone who signs up for updates at the bottom of the home page.', toggle: 'Send this confirmation' },
+  { key: 'programmeNotice', title: 'Programme announcement (default wording)', when: 'Filled in for you when you click “Notify subscribers” in Pathways. You can still change it before sending.' }
+];
+
+export function SubscriberEmailsEditor({ initial }: { initial: SubscriberMessages }) {
+  const editor = useEditor(initial, saveMessages);
+  const { value, update } = editor;
+  const set = (key: keyof SubscriberMessages, patch: Partial<EmailTemplate>) => update({ [key]: { ...value[key], ...patch } } as Partial<SubscriberMessages>);
+  return <div className="card" style={{ marginTop: 18 }}>
+    <h2>Subscriber emails</h2>
+    <p>What people receive after signing up. <code>{'{programme}'}</code>, <code>{'{applyLink}'}</code> and <code>{'{siteName}'}</code> are filled in for you. Each confirmation is one extra email, which counts towards your Resend plan’s limits.</p>
+    <div className="grid3">{TEMPLATES.map(t => <div key={t.key} className="stack">
+      <div><b>{t.title}</b><div className="small muted">{t.when}</div></div>
+      {t.toggle && <Toggle label={t.toggle} checked={value[t.key].enabled} onChange={enabled => set(t.key, { enabled })}/>}
+      <TextField label="Subject" value={value[t.key].subject} max={200} onChange={subject => set(t.key, { subject })}/>
+      <TextArea label="Message" rows={9} value={value[t.key].body} max={5000} onChange={body => set(t.key, { body })}/>
+    </div>)}</div>
+    <SaveBar editor={editor} label="Save subscriber emails"/>
   </div>;
 }

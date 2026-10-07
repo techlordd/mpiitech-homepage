@@ -11,7 +11,7 @@ export type EmailLogEntry = {
   id: string; createdAt: string; kind: string; to: string[]; subject: string;
   status: EmailStatus; providerId: string; error: string; lastEvent: string; updatedAt: string;
 };
-export type SubmissionStatus = 'new' | 'in_progress' | 'closed' | 'spam';
+export type SubmissionStatus = 'new' | 'in_progress' | 'notified' | 'closed' | 'spam';
 export type SubmissionField = { key: string; label: string; value: string };
 export type Submission = {
   id: string; createdAt: string; form: string; status: SubmissionStatus; name: string; email: string;

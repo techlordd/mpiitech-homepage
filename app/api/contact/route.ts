@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { splitList } from '@/lib/content';
+import { applyLink, fillTemplate, splitList } from '@/lib/content';
 import { sendEmail } from '@/lib/email';
+import { absoluteUrl } from '@/lib/seo';
 import { submissionText, validateForm } from '@/lib/form-validation';
 import { getContent } from '@/lib/site';
 import { store, storageKind, type Submission, type SubmissionField } from '@/lib/store';
@@ -39,6 +40,7 @@ export async function POST(request: Request) {
     const content = await getContent();
     let subject: string, fields: SubmissionField[], name = '', summary = '', recipients: string[] = [];
     let autoReply: { subject: string; body: string } | null = null;
+    let programme = '', programmeApply = '';
 
     if (data.kind === 'enquiry' || data.kind === 'contact') {
       const def = content.forms[data.kind];
@@ -55,9 +57,13 @@ export async function POST(request: Request) {
       subject = `${content.branding.siteName} — Programme notification request: ${pathway.title}`;
       fields = [{ key: 'email', label: 'Email address', value: data.email }, { key: 'programme', label: 'Programme', value: pathway.title }];
       summary = pathway.title;
+      programme = pathway.title; programmeApply = absoluteUrl(content, applyLink(pathway), new URL(request.url).origin);
+      // The subscriber gets their own "you're on the list" email, as well as the team's notification.
+      if (content.messages.programmeConfirm.enabled && content.messages.programmeConfirm.subject.trim()) autoReply = content.messages.programmeConfirm;
     } else {
       subject = `${content.branding.siteName} — Newsletter subscription request`;
       fields = [{ key: 'email', label: 'Email address', value: data.email }];
+      if (content.messages.newsletterConfirm.enabled && content.messages.newsletterConfirm.subject.trim()) autoReply = content.messages.newsletterConfirm;
     }
 
     const id = data.submissionId;
@@ -82,7 +88,7 @@ export async function POST(request: Request) {
     }
 
     if (autoReply) {
-      const fill = (t: string) => t.replace(/\{name\}/g, name || 'there').replace(/\{siteName\}/g, content.branding.siteName);
+      const fill = (t: string) => fillTemplate(t, { name, programme, applyLink: programmeApply, siteName: content.branding.siteName });
       await sendEmail({ kind: `${data.kind}-autoreply`, to: [data.email], subject: fill(autoReply.subject), text: fill(autoReply.body), idempotencyKey: `mpiitech-${id}-ack` });
     }
     return NextResponse.json({ success: true });

@@ -1,22 +1,22 @@
 import Link from 'next/link';
 import { getEmailConfig } from '@/lib/email';
-import { getEmailSettings } from '@/lib/site';
+import { getEmailSettings, loadContent } from '@/lib/site';
 import { store } from '@/lib/store';
 import { PageHead } from '../../ui';
 import { formatDate } from '../../format';
-import { EmailSettingsEditor, LogActions, TestEmail } from './editor';
+import { EmailSettingsEditor, LogActions, SubscriberEmailsEditor, TestEmail } from './editor';
 
 export const metadata = { title: 'Email & delivery log' };
 const PAGE_SIZE = 30;
 const STATUS: Record<string, [string, string]> = { sent: ['Accepted', 'green'], failed: ['Failed', 'red'], not_configured: ['Not configured', 'amber'] };
 const EVENT: Record<string, string> = { delivered: 'green', opened: 'green', clicked: 'green', sent: 'blue', queued: 'blue', scheduled: 'blue', delivery_delayed: 'amber', bounced: 'red', complained: 'red', failed: 'red', suppressed: 'red', canceled: '' };
-const KIND: Record<string, string> = { enquiry: 'Center hire', contact: 'Contact', programme: 'Programme', newsletter: 'Newsletter', test: 'Test', 'enquiry-autoreply': 'Auto-reply', 'contact-autoreply': 'Auto-reply' };
+const KIND: Record<string, string> = { enquiry: 'Center hire', contact: 'Contact', programme: 'Programme', newsletter: 'Newsletter', test: 'Test', 'enquiry-autoreply': 'Auto-reply', 'contact-autoreply': 'Auto-reply', 'programme-autoreply': 'Programme confirmation', 'newsletter-autoreply': 'Newsletter confirmation', 'programme-notice': 'Programme announcement', 'programme-notice-test': 'Announcement test' };
 
 export default async function EmailPage({ searchParams }: { searchParams: Promise<{ status?: string; page?: string }> }) {
   const sp = await searchParams;
   const status = sp.status && sp.status in STATUS ? sp.status : undefined;
   const page = Math.max(1, Number(sp.page) || 1);
-  const [settings, config, log] = await Promise.all([getEmailSettings(), getEmailConfig(), store().listEmailLog({ status, limit: PAGE_SIZE, offset: (page - 1) * PAGE_SIZE })]);
+  const [settings, config, log, content] = await Promise.all([getEmailSettings(), getEmailConfig(), store().listEmailLog({ status, limit: PAGE_SIZE, offset: (page - 1) * PAGE_SIZE }), loadContent()]);
   const pages = Math.max(1, Math.ceil(log.total / PAGE_SIZE));
   const link = (p: Record<string, string | undefined>) => `/admin/email?${new URLSearchParams(Object.entries({ status, ...p }).filter(([, v]) => v) as [string, string][])}`;
   const source = (s: string) => s === 'dashboard' ? 'set here' : s === 'environment' ? 'from environment variables' : 'missing';
@@ -41,6 +41,7 @@ export default async function EmailPage({ searchParams }: { searchParams: Promis
         </div>
       </div>
     </div>
+    <SubscriberEmailsEditor initial={content.messages}/>
     <div className="card-head" style={{ marginTop: 10 }}>
       <div><h2>Delivery log</h2><p className="small">Every email the website tries to send. “Accepted” means Resend took the email; refresh to see whether it was delivered, opened or bounced.</p></div>
       <LogActions/>

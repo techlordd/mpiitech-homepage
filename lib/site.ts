@@ -28,7 +28,8 @@ export function normaliseContent(docs: Record<string, unknown>): SiteContent {
     code: withDefaults(DEFAULT_CONTENT.code, docs.code),
     pathways: Array.isArray(docs.pathways) ? docs.pathways.map(p => { const pathway = withDefaults(pathwayDefaults, p); return { ...pathway, skills: pathway.skills.map(normaliseSkill) }; }) : DEFAULT_CONTENT.pathways,
     forms: { enquiry: normaliseForm('enquiry', forms.enquiry), contact: normaliseForm('contact', forms.contact) },
-    contact: withDefaults(DEFAULT_CONTENT.contact, docs.contact)
+    contact: withDefaults(DEFAULT_CONTENT.contact, docs.contact),
+    messages: withDefaults(DEFAULT_CONTENT.messages, docs.messages)
   };
 }
 

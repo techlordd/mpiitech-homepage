@@ -34,8 +34,9 @@ export default function PathwaysEditor({ initial, interest, portalUrl }: { initi
           </div>
           <div className="title" onClick={() => setOpen(isOpen ? null : p.id)}>
             <b>{p.title || 'Untitled pathway'}</b>
-            <small>{label} · {p.active ? <b style={{ color: 'var(--green)' }}>Active – accepting applications</b> : 'Coming soon'}{interest[p.title] ? ` · ${interest[p.title]} interested` : ''}{!p.active && !p.notify ? ' · notifications off' : ''}</small>
+            <small>{label} · {p.active ? <b style={{ color: 'var(--green)' }}>Active – accepting applications</b> : 'Coming soon'}{interest[p.title] ? ` · ${interest[p.title]} waiting to hear` : ''}{!p.active && !p.notify ? ' · notifications off' : ''}</small>
           </div>
+          {(interest[p.title] ?? 0) > 0 && <Link className="btn ghost sm" href={`/admin/pathways/notify?id=${encodeURIComponent(p.id)}`}>Notify subscribers ({interest[p.title]})</Link>}
           <Toggle label="Visible" checked={p.visible} onChange={visible => set(p.id, { visible })}/>
           <button className="btn ghost sm" onClick={() => setOpen(isOpen ? null : p.id)} aria-expanded={isOpen}>{isOpen ? 'Close' : 'Edit'}</button>
           <button className="btn danger sm" onClick={() => remove(p)}>Remove</button>
@@ -59,7 +60,7 @@ export default function PathwaysEditor({ initial, interest, portalUrl }: { initi
               ? <TextField label="“Apply now” link" value={p.applyUrl} max={2000} onChange={applyUrl => set(p.id, { applyUrl })} placeholder={portalUrl || '/contact'}
                   hint={`Where applicants go, e.g. your application form. Leave empty to use ${portalUrl ? 'the portal’s application form' : 'the Contact us page'}.`}/>
               : <Toggle label="“Email me when this programme starts” form" hint="Lets visitors ask to be emailed when applications open." checked={p.notify} onChange={notify => set(p.id, { notify })}/>}
-            {p.active && (interest[p.title] ?? 0) > 0 && <div className="notice" style={{ margin: 0 }}><b>{interest[p.title]} {interest[p.title] === 1 ? 'person' : 'people'} asked to be told when this programme starts</b><Link href="/admin/submissions?form=programme">View and export their emails</Link> to let them know applications are open.</div>}
+            {p.active && (interest[p.title] ?? 0) > 0 && <div className="notice" style={{ margin: 0 }}><b>{interest[p.title]} {interest[p.title] === 1 ? 'person is' : 'people are'} waiting to hear when this programme starts</b><Link href={`/admin/pathways/notify?id=${encodeURIComponent(p.id)}`}>Email them now</Link> to let them know applications are open (save your changes first).</div>}
           </div>
         </div></div>}
       </div>;

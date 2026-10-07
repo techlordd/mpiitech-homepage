@@ -10,6 +10,12 @@ export function siteUrl(c: SiteContent) {
   return '';
 }
 
+/** A full address for links in emails, where a path such as /contact means nothing. */
+export function absoluteUrl(c: SiteContent, url: string, fallbackOrigin = '') {
+  const base = siteUrl(c) || fallbackOrigin;
+  try { return base ? new URL(url, base).toString() : url; } catch { return url; }
+}
+
 const absolute = (base: string, url: string) => { try { return new URL(url, base || 'http://localhost').toString(); } catch { return url; } };
 
 export function pageTitle(c: SiteContent, key: SeoPageKey) {

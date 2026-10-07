@@ -204,3 +204,6 @@ dl.kv dd{margin:0;padding:7px 0;border-bottom:1px solid var(--line);white-space:
 .skill-row{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1.4fr) 150px auto;gap:8px;align-items:center}
 @media(max-width:860px){.skill-row{grid-template-columns:auto 1fr;}.skill-row>*:nth-child(n+3){grid-column:2}}
 .status-panel{display:flex;flex-direction:column;gap:14px;border:1px solid var(--line);border-radius:10px;padding:14px;background:#fbfcfe}
+.email-preview{border:1px solid var(--line);border-radius:10px;padding:16px;background:#fbfcfe}
+.email-preview b{display:block;margin-top:2px}
+.email-body{white-space:pre-wrap;word-break:break-word;font-size:13.5px;color:var(--navy)}

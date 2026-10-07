@@ -6,8 +6,10 @@ import { z } from 'zod';
 import {
   SESSION_COOKIE, UnauthorisedError, checkCredentials, clearLoginAttempts, createSessionValue, loginRateLimited, requireAdmin, adminConfigured
 } from '@/lib/auth';
-import { PATHWAY_ART, PATHWAY_COLORS, SKILL_ICONS, splitList, type ContentKey, type SiteContent } from '@/lib/content';
-import { getEmailConfig, isEmail, refreshDeliveryStatus, sendEmail } from '@/lib/email';
+import { PATHWAY_ART, PATHWAY_COLORS, SKILL_ICONS, applyLink, fillTemplate, splitList, type ContentKey, type SiteContent } from '@/lib/content';
+import { getEmailConfig, isEmail, refreshDeliveryStatus, sendBulk, sendEmail } from '@/lib/email';
+import { absoluteUrl } from '@/lib/seo';
+import { programmeSubscribers } from '@/lib/subscribers';
 import { CONTENT_TAG, getEmailSettings, loadContent, saveContent, saveEmailSettings } from '@/lib/site';
 import { StorageUnavailableError, store, type SubmissionStatus } from '@/lib/store';
 
@@ -203,8 +205,49 @@ export async function clearEmailLog() {
   return guarded(async () => { await store().clearEmailLog(); return 'Delivery log cleared.'; });
 }
 
+/* ---------- Subscriber emails ---------- */
+const templateSchema = z.object({ enabled: z.boolean(), subject: text(200), body: text(5000) });
+const messagesSchema = z.object({ programmeConfirm: templateSchema, newsletterConfirm: templateSchema, programmeNotice: templateSchema });
+export async function saveMessages(input: unknown) {
+  return guarded(async () => { await saveSection('messages', messagesSchema.parse(input)); });
+}
+
+const noticeSchema = z.object({
+  pathwayId: z.string().min(1).max(80), subject: required(200), body: required(5000),
+  sendId: z.uuid(), testTo: z.string().trim().max(254).optional()
+});
+
+/** Sends the "applications are open" email to a test address, or to everyone still waiting. */
+export async function notifySubscribers(input: { pathwayId: string; subject: string; body: string; sendId: string; testTo?: string; mode: 'test' | 'all' }) {
+  return guarded(async () => {
+    const v = noticeSchema.parse(input);
+    const content = await loadContent();
+    const pathway = content.pathways.find(p => p.id === v.pathwayId);
+    if (!pathway) throw new ActionError('This programme no longer exists.');
+    const values = { programme: pathway.title, siteName: content.branding.siteName, applyLink: absoluteUrl(content, applyLink(pathway)) };
+    const subject = fillTemplate(v.subject, values);
+    const body = fillTemplate(v.body, values);
+
+    if (input.mode === 'test') {
+      if (!v.testTo || !isEmail(v.testTo)) throw new ActionError('Enter a valid address to send the test to.');
+      const result = await sendEmail({ kind: 'programme-notice-test', to: [v.testTo], subject: `[Test] ${subject}`, text: body });
+      if (!result.ok) throw new ActionError(result.reason === 'not_configured' ? `Email is not configured: ${result.error}` : `Resend rejected the email: ${result.error}`);
+      return `Test sent to ${v.testTo}. Nobody else was emailed.`;
+    }
+
+    const { waiting, waitingRequests } = await programmeSubscribers(pathway.title);
+    if (!waiting.length) return 'Nobody is waiting for this programme, so nothing was sent.';
+    const result = await sendBulk({ kind: 'programme-notice', subject, text: body, idempotencyKey: `mpiitech-notice-${v.sendId}` }, waiting);
+    const reached = new Set(result.sent.map(e => e.toLowerCase()));
+    for (const s of waitingRequests) if (reached.has(s.email.trim().toLowerCase())) await store().updateSubmission(s.id, { status: 'notified' });
+    if (result.error && !result.sent.length) throw new ActionError(`Nothing was sent. ${result.error}`);
+    if (result.error) throw new ActionError(`Sent to ${result.sent.length} of ${waiting.length} people, then Resend stopped: ${result.error}. The ${result.failed.length} not reached are still waiting; try again later to send to them.`);
+    return `Sent to ${result.sent.length} ${result.sent.length === 1 ? 'person' : 'people'}. They are now marked as Notified.`;
+  });
+}
+
 /* ---------- Submissions ---------- */
-const statusSchema = z.enum(['new', 'in_progress', 'closed', 'spam']);
+const statusSchema = z.enum(['new', 'in_progress', 'notified', 'closed', 'spam']);
 export async function updateSubmission(id: string, patch: { status?: SubmissionStatus; notes?: string }) {
   return guarded(async () => {
     const v = z.object({ status: statusSchema.optional(), notes: text(5000).optional() }).parse(patch);
