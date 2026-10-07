@@ -31,3 +31,15 @@ export async function waitingCounts(): Promise<Record<string, number>> {
   }
   return Object.fromEntries([...unique].map(([title, set]) => [title, set.size]));
 }
+
+/**
+ * Whether this address is already signed up, so a second sign-up adds no new
+ * request and sends no more emails. A closed request (or, for a programme, one
+ * already notified) lets the person sign up again; one marked spam stays blocked.
+ */
+export async function alreadySubscribed(form: 'programme' | 'newsletter', email: string, programme = ''): Promise<boolean> {
+  const address = email.trim().toLowerCase();
+  const blocking = form === 'programme' ? new Set(['new', 'in_progress', 'spam']) : new Set(['new', 'in_progress', 'notified', 'spam']);
+  const { items } = await store().listSubmissions({ form, q: address, limit: 200 });
+  return items.some(s => s.email.trim().toLowerCase() === address && blocking.has(s.status) && (form === 'newsletter' || s.summary === programme));
+}

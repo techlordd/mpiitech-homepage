@@ -6,6 +6,7 @@ async function post(payload: Record<string, unknown>) {
   const response = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...payload, submissionId: crypto.randomUUID() }) });
   const result = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(result.error || 'Unable to send. Please try again.');
+  return result as { duplicate?: boolean };
 }
 
 export function EmailForm({ kind, programme, label }: { kind: 'programme' | 'newsletter'; programme?: string; label?: string }) {
@@ -17,8 +18,10 @@ export function EmailForm({ kind, programme, label }: { kind: 'programme' | 'new
     const form = event.currentTarget;
     setBusy(true); setStatus('');
     try {
-      await post({ ...Object.fromEntries(new FormData(form)), kind, programme });
-      setStatus(kind === 'newsletter' ? 'Thank you! Your newsletter request has been received.' : 'Thank you! We have received your request for programme updates.');
+      const { duplicate } = await post({ ...Object.fromEntries(new FormData(form)), kind, programme });
+      setStatus(duplicate
+        ? kind === 'newsletter' ? 'You’re already subscribed. There’s no need to sign up again.' : 'You’re already on the list for this programme. We’ll email you when it opens.'
+        : kind === 'newsletter' ? 'Thank you! Your newsletter request has been received.' : 'Thank you! We have received your request for programme updates.');
       form.reset();
     } catch (error) { setStatus(error instanceof Error ? error.message : 'Unable to send. Please try again.'); }
     finally { setBusy(false); }

@@ -101,25 +101,37 @@ const post = (payload, origin = 'http://localhost:3000') => POST(new Request('ht
   assert.deepEqual(JSON.parse(JSON.stringify(sent[7].message.to)), ['visitor@example.com']);
   assert.ok(sent[7].message.text.startsWith('Hello Ada,'));
 
+  // Signing up again with the same address (any capitals) stores and sends nothing more.
+  const before = sent.length;
+  for (const payload of [{ ...base(), email: 'Visitor@Example.com', kind: 'newsletter' }, { ...base(), kind: 'programme', programme: 'Digital Foundations' }]) {
+    const response = await post(payload);
+    assert.equal(response.status, 200); assert.equal((await response.json()).duplicate, true);
+    assert.equal(await store().getSubmission(payload.submissionId), null);
+  }
+  assert.equal(sent.length, before);
+  // ...but the same person can still sign up for a different programme.
+  const other = await post({ ...base(), kind: 'programme', programme: DEFAULT_CONTENT.pathways[2].title });
+  assert.equal(other.status, 200); assert.equal((await other.json()).duplicate, undefined); assert.equal(sent.length, before + 2);
+
   // Confirmations can be switched off.
   const messages = structuredClone(DEFAULT_CONTENT.messages); messages.newsletterConfirm.enabled = false;
   await store().setDoc('messages', messages);
-  const before = sent.length;
-  assert.equal((await post({ ...base(), kind: 'newsletter' })).status, 200);
-  assert.equal(sent.length, before + 1);
+  const beforeOff = sent.length;
+  assert.equal((await post({ ...base(), email: 'quiet@example.com', kind: 'newsletter' })).status, 200);
+  assert.equal(sent.length, beforeOff + 1);
   await store().setDoc('messages', DEFAULT_CONTENT.messages);
 
   // Active programmes take applications instead of update requests.
   const pathways = structuredClone(DEFAULT_CONTENT.pathways); pathways[1].active = true;
   await store().setDoc('pathways', pathways);
   assert.equal((await post({ ...base(), kind: 'programme', programme: pathways[1].title })).status, 409);
-  assert.equal((await post({ ...base(), kind: 'programme', programme: pathways[2].title })).status, 200);
+  assert.equal((await post({ ...base(), kind: 'programme', programme: pathways[4].title })).status, 200);
 
   // Provider failure is logged; the stored submission is still accepted.
   providerError = true;
-  assert.equal((await post({ ...base(), kind: 'newsletter' })).status, 200);
+  assert.equal((await post({ ...base(), email: 'fail1@example.com', kind: 'newsletter' })).status, 200);
   process.env.MPIITECH_STORAGE = 'none';
-  assert.equal((await post({ ...base(), kind: 'newsletter' })).status, 502);
+  assert.equal((await post({ ...base(), email: 'fail2@example.com', kind: 'newsletter' })).status, 502);
   delete process.env.MPIITECH_STORAGE;
   const log = await store().listEmailLog({ limit: 100 });
   assert.ok(log.items.some(e => e.status === 'failed') && log.items.some(e => e.status === 'not_configured') && log.items.some(e => e.status === 'sent' && e.providerId));
@@ -137,7 +149,9 @@ const post = (payload, origin = 'http://localhost:3000') => POST(new Request('ht
   const { sendBulk } = require(path.join(root, 'lib/email.ts'));
   const course = pathways[3].title;
   const people = Array.from({ length: 60 }, (_, n) => `learner${n}@example.com`);
-  for (const email of [...people, 'LEARNER0@example.com']) assert.equal((await post({ ...base(), email, kind: 'programme', programme: course })).status, 200);
+  for (const email of people) assert.equal((await post({ ...base(), email, kind: 'programme', programme: course })).status, 200);
+  // Requests saved before duplicates were blocked still count each person once.
+  await store().addSubmission({ ...(await store().listSubmissions({ form: 'programme', q: 'learner0@', limit: 1 })).items[0], id: uuid(), email: 'LEARNER0@example.com' });
   const subs = await programmeSubscribers(course);
   assert.equal(subs.waiting.length, 60); assert.equal(subs.waitingRequests.length, 61);
   assert.equal((await waitingCounts())[course], 60);
@@ -156,5 +170,5 @@ const post = (payload, origin = 'http://localhost:3000') => POST(new Request('ht
   assert.equal((await waitingCounts())[course], undefined);
 
   fs.rmSync(dataDir, { recursive: true, force: true });
-  process.stdout.write('PASS: validation, consent, dates, options, origin, missing config, storage fallback, four form types, recipients, per-form routing, hidden fields, auto-reply, subscriber confirmations, active programmes, reply-to, zero computers, idempotency, retries, honeypot, provider failure, delivery log and subscriber notices. No emails sent.\n');
+  process.stdout.write('PASS: validation, consent, dates, options, origin, missing config, storage fallback, four form types, recipients, per-form routing, hidden fields, auto-reply, subscriber confirmations, duplicate sign-ups, active programmes, reply-to, zero computers, idempotency, retries, honeypot, provider failure, delivery log and subscriber notices. No emails sent.\n');
 })().catch(error => { fs.rmSync(dataDir, { recursive: true, force: true }); process.stderr.write(String(error.stack || error) + '\n'); process.exitCode = 1; });

@@ -8,9 +8,10 @@ export const dynamic = 'force-dynamic';
 export default async function PanelLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   if (!(await isAdmin())) redirect('/admin/login');
   const counts = await store().submissionCounts().catch(() => []);
-  const newCount = (form: string) => counts.filter(c => c.form === form && c.status === 'new').reduce((n, c) => n + c.count, 0);
+  const newCounts: Record<string, number> = {};
+  for (const c of counts) if (c.status === 'new') newCounts[c.form] = (newCounts[c.form] ?? 0) + c.count;
   return <div className="shell">
-    <Sidebar newEnquiries={newCount('enquiry')} newMessages={newCount('contact')}/>
+    <Sidebar newCounts={newCounts}/>
     <main className="main">{children}</main>
   </div>;
 }

@@ -6,6 +6,7 @@ import { absoluteUrl } from '@/lib/seo';
 import { submissionText, validateForm } from '@/lib/form-validation';
 import { getContent } from '@/lib/site';
 import { store, storageKind, type Submission, type SubmissionField } from '@/lib/store';
+import { alreadySubscribed } from '@/lib/subscribers';
 
 export const runtime = 'nodejs';
 
@@ -72,6 +73,8 @@ export async function POST(request: Request) {
     if (storageKind() !== 'none') {
       try {
         if (await store().getSubmission(id)) return NextResponse.json({ success: true }); // Already received (retry).
+        // Signing up twice adds nothing and sends no more emails.
+        if ((data.kind === 'programme' || data.kind === 'newsletter') && await alreadySubscribed(data.kind, data.email, summary)) return NextResponse.json({ success: true, duplicate: true });
         const submission: Submission = { id, createdAt: now, updatedAt: now, form: data.kind, status: 'new', name, email: data.email, summary, fields, notes: '', emailStatus: 'pending' };
         await store().addSubmission(submission);
         stored = true;

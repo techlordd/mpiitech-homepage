@@ -4,7 +4,7 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { logout } from './actions';
 
-const groups: { title: string; links: { href: string; label: string; count?: 'enquiries' | 'messages' }[] }[] = [
+const groups: { title: string; links: { href: string; label: string; count?: string }[] }[] = [
   { title: '', links: [{ href: '/admin', label: 'Overview' }] },
   { title: 'Content', links: [
     { href: '/admin/pathways', label: 'Pathways' },
@@ -12,10 +12,10 @@ const groups: { title: string; links: { href: string; label: string; count?: 'en
     { href: '/admin/contact', label: 'Contact page' }
   ] },
   { title: 'Inbox', links: [
-    { href: '/admin/submissions?form=enquiry', label: 'Center hire enquiries', count: 'enquiries' },
-    { href: '/admin/submissions?form=contact', label: 'Contact messages', count: 'messages' },
-    { href: '/admin/submissions?form=programme', label: 'Programme interest' },
-    { href: '/admin/submissions?form=newsletter', label: 'Newsletter' }
+    { href: '/admin/submissions?form=enquiry', label: 'Center hire enquiries', count: 'enquiry' },
+    { href: '/admin/submissions?form=contact', label: 'Contact messages', count: 'contact' },
+    { href: '/admin/submissions?form=programme', label: 'Programme interest', count: 'programme' },
+    { href: '/admin/submissions?form=newsletter', label: 'Newsletter', count: 'newsletter' }
   ] },
   { title: 'Settings', links: [
     { href: '/admin/branding', label: 'Site branding' },
@@ -25,7 +25,8 @@ const groups: { title: string; links: { href: string; label: string; count?: 'en
   ] }
 ];
 
-export default function Sidebar({ newEnquiries, newMessages }: { newEnquiries: number; newMessages: number }) {
+/** `newCounts`: submissions still marked New, per form. */
+export default function Sidebar({ newCounts }: { newCounts: Record<string, number> }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const form = useSearchParams().get('form');
@@ -34,7 +35,6 @@ export default function Sidebar({ newEnquiries, newMessages }: { newEnquiries: n
     if (path !== pathname) return false;
     return !query || new URLSearchParams(query).get('form') === form;
   };
-  const counts = { enquiries: newEnquiries, messages: newMessages };
   return <>
     <div className="mobile-bar">
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -51,7 +51,7 @@ export default function Sidebar({ newEnquiries, newMessages }: { newEnquiries: n
         {groups.map(g => <div key={g.title || 'main'} style={{ display: 'contents' }}>
           {g.title && <div className="group">{g.title}</div>}
           {g.links.map(l => <Link key={l.href} href={l.href} className={isActive(l.href) ? 'active' : ''}>
-            {l.label}{l.count && counts[l.count] > 0 && <span className="count">{counts[l.count]}</span>}
+            {l.label}{l.count && (newCounts[l.count] ?? 0) > 0 && <span className="count" title={`${newCounts[l.count]} new`}>{newCounts[l.count]}</span>}
           </Link>)}
         </div>)}
       </nav>
