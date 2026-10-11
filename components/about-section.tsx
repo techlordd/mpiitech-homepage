@@ -14,7 +14,7 @@ const values = (siteName: string): Value[] => [
     icon: <svg viewBox="0 0 48 48"><circle cx="17" cy="16" r="6" fill="#ffc53d"/><circle cx="31" cy="16" r="6" fill="#16a34a"/><path d="M6 38c0-8 5-13 11-13s11 5 11 13z" fill="#16a34a"/><path d="M20 38c0-8 5-13 11-13s11 5 11 13z" fill="#ffc53d"/></svg>
   },
   {
-    title: 'A place to focus', text: `Use dedicated learning spaces at the ${siteName} center in Modakeke.`, tone: 'purple',
+    title: 'A place to focus', text: `Use dedicated learning spaces at the ${siteName} Hub in Modakeke.`, tone: 'purple',
     icon: <svg viewBox="0 0 48 48"><path d="M24 4c-8 0-14 6-14 14 0 10 14 26 14 26s14-16 14-26c0-8-6-14-14-14z" fill="#7c3aed"/><circle cx="24" cy="18" r="6" fill="#fff"/></svg>
   }
 ];

@@ -4,7 +4,6 @@ import { EmailForm } from '@/components/forms';
 import { HireSection } from '@/components/hire';
 import PathwayCard from '@/components/pathway-card';
 import StartCard from '@/components/start-card';
-import StepsSection from '@/components/steps-section';
 import { ArrowIcon } from '@/components/illustrations';
 import { portalPage } from '@/lib/content';
 import { organisationJsonLd, pageMetadata } from '@/lib/seo';
@@ -38,7 +37,7 @@ export default async function Home() {
   ];
   return <main id="home">
 {jsonLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }}/>}
-<section className="hero"><div className="wrap hero-grid"><div><span className="eyebrow">Modakeke, Osun State, Nigeria</span><h1>Learn digital skills.<br/><em>Build your<br/>next chapter.</em></h1><p>From your first computer lesson to a career in technology. Learn, practise, and grow at {branding.siteName}. A training space for learners, schools, and organisations.</p><div className="actions"><a className="pill-button" href={portalPage('/apply') || '#apply'}>Apply for a programme<span className="pill-arrow"><ArrowIcon/></span></a><a className="ghost-button" href="#programmes">Explore programmes</a></div><small>For students, aspiring professionals, and our community.</small></div>
+<section className="hero"><div className="wrap hero-grid"><div><span className="eyebrow">Modakeke, Osun State, Nigeria</span><h1>Learn digital skills.<br/><em>Build your<br/>next chapter.</em></h1><p>From your first computer lesson to a career in technology. Learn, practise, and grow at {branding.siteName}. A training space for learners, schools, and organisations.</p><div className="actions"><a className="pill-button" href={portalPage('/apply')}>Apply for a programme<span className="pill-arrow"><ArrowIcon/></span></a><a className="ghost-button" href="#programmes">Explore programmes</a></div><small>For students, aspiring professionals, and our community.</small></div>
 <figure className="hero-photo">{/* eslint-disable-next-line @next/next/no-img-element -- hero can be any uploaded image */}<img src={branding.heroImageUrl} alt={branding.heroImageAlt} fetchPriority="high"/>{(branding.heroCaption || branding.heroCaptionLabel) && <figcaption><strong>{branding.heroCaption}</strong><span>{branding.heroCaptionLabel}</span></figcaption>}</figure></div></section>
 <div className="benefits"><ul className="wrap">{benefits.map(x => <li key={x.title} className={`benefit tone-${x.tone}`}><span className="benefit-icon" aria-hidden="true"><svg viewBox="0 0 28 28">{x.icon}</svg></span><p><strong>{x.title}</strong><span>{x.text}</span></p></li>)}</ul></div>
 <section id="programmes" className="section pale"><div className="wrap"><div className="section-heading"><div><span className="eyebrow">Find your starting point</span><h2>A foundation today.<br/>More possibilities tomorrow.</h2></div><p>Start with everyday digital skills, or explore a specialist pathway. Check the application portal for available intakes, fees, and schedules.</p></div>
@@ -52,7 +51,6 @@ export default async function Home() {
 <p className="section-note">Programmes are introduced as instructors and equipment become available. No application fee is collected on this site.</p></div></section>
 <AboutSection siteName={branding.siteName}/>
 <HireSection siteName={branding.siteName}/>
-<StepsSection/>
 <section className="section pale lower" aria-label="Portal, visit and newsletter"><div className="wrap">
 <div className="portal" id="portal"><div><span className="eyebrow">Already part of {branding.siteName}?</span><h2>Your learning, in one place.</h2><p>Access the center portal for learner information, updates, and fees, as well as training and administration tools.</p></div><div className="portal-actions"><a className="pill-button" href={portal || '/contact'}>{portal ? 'Sign in to the portal' : 'Contact the center'}<span className="pill-arrow"><ArrowIcon/></span></a><a className="portal-help" href="#faq">Need assistance?</a></div></div>
 <div className="visit-grid">

@@ -30,7 +30,7 @@ export default async function HirePage({ searchParams }: { searchParams: Promise
     <section className="page-hero hire-hero"><div className="wrap">
       <span className="eyebrow">Hire the center</span>
       <h1>Your training. <em>Our center.</em></h1>
-      <p>Hire the {branding.siteName} center in Modakeke for organised training, assessments, and workforce development. Tell us what you need and we’ll confirm availability, suitability, and pricing before anything is booked.</p>
+      <p>Hire the {branding.siteName} Hub in Modakeke for organised training, assessments, and workforce development. Tell us what you need and we’ll confirm availability, suitability, and pricing before anything is booked.</p>
       <div className="hire-hero-actions">
         <a className="pill-button" href="#enquiry">Start your enquiry<span className="pill-arrow"><ArrowIcon/></span></a>
         <Link className="hire-hero-link" href="/contact">Ask a question first</Link>
@@ -39,7 +39,7 @@ export default async function HirePage({ searchParams }: { searchParams: Promise
 
     <section className="section pale" id="uses"><div className="wrap">
       <div className="hire-section-head"><span className="eyebrow">What you can use it for</span><h2>A training space for every kind of group.</h2></div>
-      <ul className="use-cards">{HIRE_USES.map(u => <UseCard key={u.title} use={u}/>)}</ul>
+      <ul className="use-cards">{HIRE_USES.map(u => <UseCard key={u.title} use={u} reveal/>)}</ul>
     </div></section>
 
     <section className="section"><div className="wrap">

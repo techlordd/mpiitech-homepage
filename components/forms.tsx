@@ -1,6 +1,7 @@
 'use client';
 import { useState, type FormEvent } from 'react';
 import { slugify, visibleFields, type FormDef, type FormField } from '@/lib/content';
+import { PhoneInput } from './phone-input';
 
 async function post(payload: Record<string, unknown>) {
   const response = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...payload, submissionId: crypto.randomUUID() }) });
@@ -78,6 +79,7 @@ function Field({ field: f, formId, initial }: { field: FormField; formId: string
   let control;
   if (f.type === 'textarea') control = <textarea {...common} maxLength={3000}/>;
   else if (f.type === 'select') control = <select {...common} defaultValue={initial && f.options.includes(initial) ? initial : ''}><option value="" disabled>{f.placeholder || 'Select an option'}</option>{f.options.map(o => <option key={o}>{o}</option>)}</select>;
+  else if (f.type === 'tel') control = <PhoneInput id={id} name={f.key} required={Boolean(required)} placeholder={f.placeholder.includes('+') ? undefined : f.placeholder || undefined} describedBy={describedBy}/>;
   else control = <input {...common} type={f.type} maxLength={f.type === 'email' ? 254 : 200} min={f.type === 'number' ? f.min ?? undefined : undefined} max={f.type === 'number' ? f.max ?? undefined : undefined}/>;
   return <div className={`field-wrap ${width}`}><label className="field" htmlFor={id}>{f.label}{required && <b> *</b>}</label>{control}{help}</div>;
 }

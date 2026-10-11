@@ -174,7 +174,7 @@ export const DEFAULT_CONTENT: SiteContent = {
     heroImageUrl: '/center.jpg',
     heroImageAlt: 'The MPIITECH training center in Modakeke at sunset',
     heroCaption: 'A place to learn. A community to grow.',
-    heroCaptionLabel: 'MPIITECH center, Modakeke',
+    heroCaptionLabel: 'MPIITECH Hub, Modakeke',
     topbarText: 'An initiative of MPI, USA & Canada',
     footerText: 'An initiative of MPI, USA & Canada.',
     stickyHeader: true
@@ -195,7 +195,7 @@ export const DEFAULT_CONTENT: SiteContent = {
       }),
       hire: page({
         title: 'Hire a training center in Modakeke %%sep%% %%sitename%%',
-        description: 'Hire the MPIITECH center in Modakeke for corporate training, school sessions, computer-based testing, and certification. Send an enquiry today.',
+        description: 'Hire the MPIITECH Hub in Modakeke for corporate training, school sessions, computer-based testing, and certification. Send an enquiry today.',
         focusKeyphrase: 'training center hire Modakeke'
       }),
       contact: page({
@@ -319,7 +319,7 @@ export const DEFAULT_CONTENT: SiteContent = {
       autoReply: {
         enabled: false,
         subject: 'We received your center hire enquiry',
-        body: 'Hello {name},\n\nThank you for your enquiry about hiring the MPIITECH center. Our team will review your request and contact you to confirm availability, arrangements, and pricing.\n\nMPIITECH'
+        body: 'Hello {name},\n\nThank you for your enquiry about hiring the MPIITECH Hub. Our team will review your request and contact you to confirm availability, arrangements, and pricing.\n\nMPIITECH'
       }
     },
     contact: {
