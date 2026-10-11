@@ -33,12 +33,14 @@ export function UseIcon({ use }: { use: Use }) {
 }
 
 /** A use card that opens the enquiry form with this use preselected. */
-export function UseCard({ use: u }: { use: Use }) {
-  return <li className={`use-card use-card-${u.tone}`}>
+export function UseCard({ use: u, reveal = false }: { use: Use; reveal?: boolean }) {
+  return <li className={`use-card use-card-${u.tone} ${reveal ? 'reveal' : ''}`}>
     <span className="use-watermark" aria-hidden="true"><svg viewBox="0 0 100 100">{u.watermark}</svg></span>
     <UseIcon use={u}/>
     <h3><Link href={`/hire-the-center?use=${encodeURIComponent(u.title)}#enquiry`}>{u.title}</Link></h3>
-    <p>{u.text}</p>
+    {reveal
+      ? <><span className="reveal-hint" aria-hidden="true">Hover for details</span><div className="use-more"><b aria-hidden="true">{u.title}</b><p>{u.text}</p></div></>
+      : <p>{u.text}</p>}
     <span className="use-arrow" aria-hidden="true"><ArrowIcon/></span>
   </li>;
 }
@@ -48,7 +50,7 @@ export function HireSection({ siteName }: { siteName: string }) {
   return <section id="hire" className="section pale"><div className="wrap">
     <div className="section-heading"><div><span className="eyebrow">A space for your organisation</span><h2>Your training.<br/>Our center.</h2></div>
       <p>Hire the {siteName} center for organised training, assessments, and workforce development in Modakeke.</p></div>
-    <ul className="use-cards">{HIRE_USES.map(u => <UseCard key={u.title} use={u}/>)}</ul>
+    <ul className="use-cards">{HIRE_USES.map(u => <UseCard key={u.title} use={u} reveal/>)}</ul>
     <div className="hire-note"><p>Tell us your preferred dates, group size, equipment, and assessment needs. The team will confirm availability, suitability, and pricing.</p>
       <Link className="pill-button" href="/hire-the-center#enquiry">Enquire about center hire<span className="pill-arrow"><ArrowIcon/></span></Link></div>
   </div></section>;

@@ -26,11 +26,15 @@ export default function StartCard({ pathway: p }: { pathway: Pathway }) {
       trailing={!p.active && p.notify && <NotifyButton programme={p.title}/>}
       panel={hasPanel && <>
         {p.details && <p className="start-details">{p.details}</p>}
-        {p.skills.length > 0 && <ol className="skill-cards" aria-label="What you will learn">{p.skills.map((s, i) => <li key={`${s.title}-${i}`} className={`skill-card tone-${i % 4}`}>
+        {p.skills.length > 0 && <ol className="skill-cards" aria-label="What you will learn">{p.skills.map((s, i) => <li key={`${s.title}-${i}`} className={`skill-card tone-${i % 4}`} tabIndex={s.description ? 0 : undefined}>
           <span className="skill-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
           <SkillIcon name={skillIcon(s)} className="skill-icon"/>
           <h4>{s.title}</h4>
-          {s.description && <p>{s.description}</p>}
+          {s.description && <>
+            <span className="reveal-hint" aria-hidden="true">Hover for details</span>
+            {/* On a mouse, this slides over the card on hover; on touch screens it shows below the title. */}
+            <div className="skill-more"><b aria-hidden="true">{s.title}</b><p>{s.description}</p></div>
+          </>}
         </li>)}</ol>}
       </>}/>
   </article>;

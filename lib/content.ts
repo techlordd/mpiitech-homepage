@@ -229,7 +229,7 @@ export const DEFAULT_CONTENT: SiteContent = {
         { title: 'Using the internet and staying safe online', description: 'Explore the internet, find useful information, and learn how to stay safe.', icon: 'internet' },
         { title: 'An introduction to programming', description: 'Understand the basics of coding and start building simple projects.', icon: 'code' }
       ],
-      featured: true, visible: true, notify: true, active: false, applyUrl: ''
+      featured: true, visible: true, notify: true, active: true, applyUrl: ''
     },
     {
       id: 'full-stack-web-development', title: 'Full-Stack Web Development',

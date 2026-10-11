@@ -67,13 +67,13 @@ const post = (payload, origin = 'http://localhost:3000') => POST(new Request('ht
 
   Object.assign(process.env, { RESEND_API_KEY: 'test-only', RESEND_FROM_EMAIL: 'MPIITECH <hello@example.com>', CONTACT_TO_EMAIL: 'admin@example.com,second@example.com' });
   const first = enquiry();
-  for (const payload of [first, contact(), { ...base(), kind: 'programme', programme: 'Digital Foundations' }, { ...base(), kind: 'newsletter' }]) assert.equal((await post(payload)).status, 200);
+  for (const payload of [first, contact(), { ...base(), kind: 'programme', programme: 'AI Engineering' }, { ...base(), kind: 'newsletter' }]) assert.equal((await post(payload)).status, 200);
   // Programme and newsletter sign-ups also get a confirmation of their own.
   assert.equal(sent.length, 6);
   const toOf = s => JSON.parse(JSON.stringify(s.message.to));
   assert.deepEqual(toOf(sent[3]), ['visitor@example.com']);
-  assert.equal(sent[3].message.subject, 'You’re on the list for Digital Foundations');
-  assert.ok(sent[3].message.text.includes('Digital Foundations') && !sent[3].message.text.includes('{'));
+  assert.equal(sent[3].message.subject, 'You’re on the list for AI Engineering');
+  assert.ok(sent[3].message.text.includes('AI Engineering') && !sent[3].message.text.includes('{'));
   assert.equal(sent[3].options.idempotencyKey, `${sent[2].options.idempotencyKey}-ack`);
   assert.deepEqual(toOf(sent[5]), ['visitor@example.com']);
   assert.ok(sent[5].message.subject.startsWith('Welcome to MPIITECH'));
@@ -103,7 +103,7 @@ const post = (payload, origin = 'http://localhost:3000') => POST(new Request('ht
 
   // Signing up again with the same address (any capitals) stores and sends nothing more.
   const before = sent.length;
-  for (const payload of [{ ...base(), email: 'Visitor@Example.com', kind: 'newsletter' }, { ...base(), kind: 'programme', programme: 'Digital Foundations' }]) {
+  for (const payload of [{ ...base(), email: 'Visitor@Example.com', kind: 'newsletter' }, { ...base(), kind: 'programme', programme: 'AI Engineering' }]) {
     const response = await post(payload);
     assert.equal(response.status, 200); assert.equal((await response.json()).duplicate, true);
     assert.equal(await store().getSubmission(payload.submissionId), null);
