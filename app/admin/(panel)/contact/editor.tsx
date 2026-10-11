@@ -30,9 +30,9 @@ export default function ContactEditor({ initial }: { initial: ContactInfo }) {
     <div className="card">
       <h2>Map</h2>
       <div className="stack">
-        <Toggle label="Show a map" hint="By default the map searches for the address above." checked={c.showMap} onChange={showMap => update({ showMap })}/>
-        {c.showMap && <TextArea label="Custom Google Maps embed (optional)" rows={2} value={c.mapEmbedUrl} max={3000} onChange={mapEmbedUrl => update({ mapEmbedUrl })}
-          placeholder='<iframe src="https://www.google.com/maps/embed?pb=…"></iframe>' hint="In Google Maps: Share → Embed a map → Copy HTML, then paste it here for an exact pin."/>}
+        <Toggle label="Show a map" hint="Shows MPIITECH’s pin on Google Maps, with a “Get directions” link." checked={c.showMap} onChange={showMap => update({ showMap })}/>
+        {c.showMap && <TextArea label="Google Maps location (optional)" rows={2} value={c.mapEmbedUrl} max={3000} onChange={mapEmbedUrl => update({ mapEmbedUrl })}
+          placeholder="https://maps.app.goo.gl/…" hint="Leave empty to use MPIITECH’s own pin. To show somewhere else, find the place in Google Maps, tap Share and paste the link here (“Embed a map” code works too)."/>}
       </div>
     </div>
     <SaveBar editor={editor}/>

@@ -9,6 +9,7 @@ import {
 import { PATHWAY_ART, PATHWAY_COLORS, SKILL_ICONS, applyLink, fillTemplate, splitList, type ContentKey, type SiteContent } from '@/lib/content';
 import { getEmailConfig, isEmail, refreshDeliveryStatus, sendBulk, sendEmail } from '@/lib/email';
 import { absoluteUrl } from '@/lib/seo';
+import { isEmbedUrl, isMapsLink, resolveMapsLink } from '@/lib/maps';
 import { programmeSubscribers } from '@/lib/subscribers';
 import { CONTENT_TAG, getEmailSettings, loadContent, saveContent, saveEmailSettings } from '@/lib/site';
 import { StorageUnavailableError, store, type SubmissionStatus } from '@/lib/store';
@@ -163,10 +164,21 @@ const contactSchema = z.object({
   eyebrow: text(80), heading: required(160), intro: text(600), address: text(500), phone: text(60), whatsapp: text(60), email: emailOrEmpty, hours: text(500),
   showMap: z.boolean(),
   mapEmbedUrl: z.string().trim().max(3000).transform(v => (v.match(/src\s*=\s*["']([^"']+)["']/i)?.[1] ?? v).replace(/&amp;/g, '&').trim())
-    .refine(v => !v || /^https:\/\/\S+$/i.test(v), 'Paste a Google Maps “Embed a map” link or iframe code')
+    .refine(v => !v || /^https:\/\/\S+$/i.test(v), 'Paste a Google Maps link or “Embed a map” code')
 });
 export async function saveContact(input: unknown) {
-  return guarded(async () => { await saveSection('contact', contactSchema.parse(input)); });
+  return guarded(async () => {
+    const contact = contactSchema.parse(input);
+    // A Share link (maps.app.goo.gl/…) can't be shown in a frame, so find the place it points at now.
+    let mapPin = '';
+    if (contact.mapEmbedUrl && isEmbedUrl(contact.mapEmbedUrl)) mapPin = contact.mapEmbedUrl;
+    else if (contact.mapEmbedUrl) {
+      if (!isMapsLink(contact.mapEmbedUrl)) throw new ActionError('That isn’t a Google Maps link. In Google Maps, tap Share and copy the link, or use Share → Embed a map → Copy HTML.');
+      mapPin = await resolveMapsLink(contact.mapEmbedUrl) ?? '';
+      if (!mapPin) throw new ActionError('Couldn’t find the place in that Google Maps link. Try Share → Embed a map → Copy HTML and paste that instead.');
+    }
+    await saveSection('contact', { ...contact, mapPin });
+  });
 }
 
 /* ---------- Email ---------- */

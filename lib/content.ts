@@ -127,6 +127,8 @@ export type ContactInfo = {
   hours: string;
   showMap: boolean;
   mapEmbedUrl: string;
+  /** The map frame's address, worked out from mapEmbedUrl when it is saved. */
+  mapPin: string;
 };
 
 export type EmailTemplate = { enabled: boolean; subject: string; body: string };
@@ -360,7 +362,8 @@ export const DEFAULT_CONTENT: SiteContent = {
     email: '',
     hours: 'Monday – Friday: 9am – 5pm\nSaturday: by appointment',
     showMap: true,
-    mapEmbedUrl: ''
+    mapEmbedUrl: '',
+    mapPin: ''
   },
   messages: {
     programmeConfirm: {
