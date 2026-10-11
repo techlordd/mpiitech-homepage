@@ -39,7 +39,7 @@ export function UseCard({ use: u, reveal = false }: { use: Use; reveal?: boolean
     <UseIcon use={u}/>
     <h3><Link href={`/hire-the-center?use=${encodeURIComponent(u.title)}#enquiry`}>{u.title}</Link></h3>
     {reveal
-      ? <><span className="reveal-hint" aria-hidden="true">Hover for details</span><div className="use-more"><b aria-hidden="true">{u.title}</b><p>{u.text}</p></div></>
+      ? <><div className="use-more"><b aria-hidden="true">{u.title}</b><p>{u.text}</p></div></>
       : <p>{u.text}</p>}
     <span className="use-arrow" aria-hidden="true"><ArrowIcon/></span>
   </li>;

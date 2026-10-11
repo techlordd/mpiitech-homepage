@@ -31,7 +31,6 @@ export default function StartCard({ pathway: p }: { pathway: Pathway }) {
           <SkillIcon name={skillIcon(s)} className="skill-icon"/>
           <h4>{s.title}</h4>
           {s.description && <>
-            <span className="reveal-hint" aria-hidden="true">Hover for details</span>
             {/* On a mouse, this slides over the card on hover; on touch screens it shows below the title. */}
             <div className="skill-more"><b aria-hidden="true">{s.title}</b><p>{s.description}</p></div>
           </>}
