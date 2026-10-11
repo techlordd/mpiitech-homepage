@@ -10,6 +10,6 @@ export default async function PathwaysPage() {
   const [{ pathways }, counts] = await Promise.all([loadContent(), waitingCounts().catch(() => ({}))]);
   return <>
     <PageHead title="Pathways" description="The programmes shown in the “Find your starting point” section of the home page. Add, edit, reorder, hide or remove them."/>
-    <PathwaysEditor initial={pathways} interest={counts} portalUrl={portalPage('/apply') ?? ''}/>
+    <PathwaysEditor initial={pathways} interest={counts} portalUrl={portalPage('/apply')}/>
   </>;
 }

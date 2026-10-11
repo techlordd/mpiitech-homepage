@@ -445,16 +445,17 @@ export function pathwayColor(p: Pick<Pathway, 'color'>, index: number): Exclude<
   return p.color !== 'auto' && PATHWAY_COLORS.includes(p.color) ? p.color : AUTO_COLORS[index % AUTO_COLORS.length];
 }
 
+/** Where the portal lives. NEXT_PUBLIC_PORTAL_URL overrides it, e.g. if the portal moves. */
+export const DEFAULT_PORTAL_URL = 'https://portal.mpiitech.com';
+
 /**
- * A page on the portal, from the one setting that says where the portal is.
- * Built from the setting's origin, so it works whether NEXT_PUBLIC_PORTAL_URL
- * was entered as the bare address or with a path on the end. Null when it is
- * not set (or is not an address), so callers fall back rather than link nowhere.
+ * A page on the portal. Built from the setting's origin, so it works whether
+ * NEXT_PUBLIC_PORTAL_URL was entered as the bare address or with a path on the
+ * end; an empty or invalid setting falls back to DEFAULT_PORTAL_URL.
  */
-export function portalPage(path: string): string | null {
-  const base = process.env.NEXT_PUBLIC_PORTAL_URL;
-  if (!base) return null;
-  try { return new URL(path, new URL(base).origin).toString(); } catch { return null; }
+export function portalPage(path: string): string {
+  try { return new URL(path, new URL(process.env.NEXT_PUBLIC_PORTAL_URL || DEFAULT_PORTAL_URL).origin).toString(); }
+  catch { return new URL(path, DEFAULT_PORTAL_URL).toString(); }
 }
 
 /**

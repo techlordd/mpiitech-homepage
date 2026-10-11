@@ -30,7 +30,7 @@ Open http://localhost:3000 for the website and http://localhost:3000/admin for t
 | `RESEND_API_KEY` | Resend API key. Can instead be entered in the dashboard. |
 | `RESEND_FROM_EMAIL` | `MPIITECH <hello@your-verified-domain.com>` — verify that domain in Resend first. Can be set in the dashboard. |
 | `CONTACT_TO_EMAIL` | Inbox(es) that receive submissions, comma-separated. Can be set in the dashboard. |
-| `NEXT_PUBLIC_PORTAL_URL` | Optional existing application / learner portal URL. |
+| `NEXT_PUBLIC_PORTAL_URL` | Optional. The portal's address; defaults to `https://portal.mpiitech.com`. |
 
 On Vercel without a database the public site still works with the default content, but the dashboard cannot save changes and submissions are only emailed.
 

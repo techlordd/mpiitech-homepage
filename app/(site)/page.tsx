@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata(await getContent(), 'home', '/');
 }
 
-const portal = process.env.NEXT_PUBLIC_PORTAL_URL;
+const portal = portalPage('/');
 const stroke = { fill: 'none', stroke: 'currentColor', strokeWidth: 2.2, strokeLinecap: 'round', strokeLinejoin: 'round' } as const;
 const benefits = [
   { title: 'Practical learning', text: 'Build skills through doing', tone: 'orange', icon: <g {...stroke}><rect x="4" y="6" width="20" height="13" rx="2"/><path d="M2 23h24M11 12l-2.5 2.5L11 17M17 12l2.5 2.5L17 17"/></g> },
