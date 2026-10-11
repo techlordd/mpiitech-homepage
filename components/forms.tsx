@@ -9,7 +9,7 @@ async function post(payload: Record<string, unknown>) {
   return result as { duplicate?: boolean };
 }
 
-export function EmailForm({ kind, programme, label }: { kind: 'programme' | 'newsletter'; programme?: string; label?: string }) {
+export function EmailForm({ kind, programme, label, hideLabel }: { kind: 'programme' | 'newsletter'; programme?: string; label?: string; hideLabel?: boolean }) {
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
   const id = `email-${slugify(programme || kind)}`;
@@ -27,7 +27,7 @@ export function EmailForm({ kind, programme, label }: { kind: 'programme' | 'new
     finally { setBusy(false); }
   }
   return <form className="email-form" onSubmit={submit}>
-    <label className="email-label" htmlFor={id}>{label ?? (kind === 'newsletter' ? 'Subscribe to our newsletter' : 'Email me when this programme starts')}</label>
+    <label className={hideLabel ? 'sr-only' : 'email-label'} htmlFor={id}>{label ?? (kind === 'newsletter' ? 'Subscribe to our newsletter' : 'Email me when this programme starts')}</label>
     <div className="email-row"><input id={id} type="email" name="email" placeholder="Your email address" required maxLength={254}/><button disabled={busy} type="submit">{busy ? 'Sending…' : kind === 'newsletter' ? 'Subscribe' : 'Notify me'}</button></div>
     <label className="check"><input type="checkbox" name="consent" value="yes" required/> <span>I agree to receive email updates {kind === 'newsletter' ? 'and newsletters' : 'about this programme'}.</span></label>
     <div className="trap" aria-hidden="true"><label>Website<input name="website" tabIndex={-1} autoComplete="off"/></label></div>

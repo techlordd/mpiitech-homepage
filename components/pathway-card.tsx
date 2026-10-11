@@ -1,6 +1,6 @@
 import { applyLink, pathwayArt, pathwayColor, type Pathway } from '@/lib/content';
-import { EmailForm } from './forms';
-import { ArrowIcon, MailIcon, PathwayScene } from './illustrations';
+import { CardActions, NotifyButton } from './card-actions';
+import { ArrowIcon, PathwayScene } from './illustrations';
 
 const ART_LABELS = {
   web: 'Illustration of a code editor and a web page layout',
@@ -27,19 +27,17 @@ export default function PathwayCard({ pathway: p, index }: { pathway: Pathway; i
         {p.image ? <img src={p.image} alt={p.imageAlt} loading="lazy"/> : <PathwayScene name={art} label={ART_LABELS[art]}/>}
       </div>
     </div>
-    {hasMore && <details className="path-more">
-      <summary className="path-button">Explore the skills<span className="pill-arrow"><ArrowIcon/></span></summary>
-      <div className="path-panel">
+    {(hasMore || p.active || p.notify) && <CardActions className="path-actions" panelClassName="path-panel"
+      panel={hasMore && <>
         {p.details && <p>{p.details}</p>}
         {p.skills.length > 0 && <ol>{p.skills.map((s, i) => <li key={i}><b>{s.title}</b>{s.description && <span>{s.description}</span>}</li>)}</ol>}
-      </div>
-    </details>}
-    {p.active
-      ? <div className="apply-box"><div><b>Applications are open</b><span>Secure your place in the next class.</span></div><a className="apply-button" href={applyLink(p)}>Apply now<span className="pill-arrow"><ArrowIcon/></span></a></div>
-      : p.notify && <div className="notify-box path-notify"><span className="notify-icon"><MailIcon/></span><EmailForm kind="programme" programme={p.title}/></div>}
+      </>}
+      trailing={p.active ? <a className="apply-button" href={applyLink(p)}>Apply now<span className="pill-arrow"><ArrowIcon/></span></a> : p.notify && <NotifyButton programme={p.title}/>}/>}
   </article>;
 }
 
 export function StatusBadge({ active }: { active: boolean }) {
-  return active ? <span className="status-badge open"><i aria-hidden="true"/>Now enrolling</span> : <span className="status-badge soon">Coming soon</span>;
+  return active
+    ? <span className="status-badge open"><i aria-hidden="true"/>Now enrolling</span>
+    : <span className="status-badge soon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" strokeWidth="2.2"/><path d="M12 7.5V12l3 2" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/></svg>Coming soon</span>;
 }

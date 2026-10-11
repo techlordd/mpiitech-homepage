@@ -64,7 +64,6 @@ export type PathwayArt = typeof PATHWAY_ART[number];
 export type Pathway = {
   id: string;
   title: string;
-  headline: string;
   description: string;
   details: string;
   skills: PathwaySkill[];
@@ -221,7 +220,7 @@ export const DEFAULT_CONTENT: SiteContent = {
   code: { head: '', bodyStart: '', bodyEnd: '' },
   pathways: [
     {
-      id: 'digital-foundations', title: 'Digital Foundations', headline: 'Get comfortable with computers.',
+      id: 'digital-foundations', title: 'Digital Foundations',
       description: 'Build confidence using a computer for school, work, and everyday life. A practical foundation for secondary school students and beginners.',
       details: '', image: '', imageAlt: '', color: 'auto', art: 'auto',
       skills: [
@@ -233,7 +232,7 @@ export const DEFAULT_CONTENT: SiteContent = {
       featured: true, visible: true, notify: true, active: false, applyUrl: ''
     },
     {
-      id: 'full-stack-web-development', title: 'Full-Stack Web Development', headline: '',
+      id: 'full-stack-web-development', title: 'Full-Stack Web Development',
       description: 'Explore how websites work, from what a visitor sees to the systems behind the page.',
       details: 'Learn the foundations of HTML, CSS, JavaScript, databases, and full-stack development through practical projects.', image: '', imageAlt: '', color: 'blue', art: 'web',
       skills: [
@@ -244,7 +243,7 @@ export const DEFAULT_CONTENT: SiteContent = {
       featured: false, visible: true, notify: true, active: false, applyUrl: ''
     },
     {
-      id: 'network-administration-security', title: 'Network Administration & Security', headline: '',
+      id: 'network-administration-security', title: 'Network Administration & Security',
       description: 'Develop skills to connect computers, support networks, and protect digital systems.',
       details: 'Explore computer networks, administration, troubleshooting, and the fundamentals of digital security.', image: '', imageAlt: '', color: 'green', art: 'network',
       skills: [
@@ -255,7 +254,7 @@ export const DEFAULT_CONTENT: SiteContent = {
       featured: false, visible: true, notify: true, active: false, applyUrl: ''
     },
     {
-      id: 'data-analytics-python', title: 'Data Analytics with Python', headline: '',
+      id: 'data-analytics-python', title: 'Data Analytics with Python',
       description: 'Learn how to work with data and turn information into useful insights.',
       details: 'Build skills in Python, data preparation, analysis, and communicating findings through practical exercises.', image: '', imageAlt: '', color: 'purple', art: 'data',
       skills: [
@@ -266,7 +265,7 @@ export const DEFAULT_CONTENT: SiteContent = {
       featured: false, visible: true, notify: true, active: false, applyUrl: ''
     },
     {
-      id: 'ai-engineering', title: 'AI Engineering', headline: '',
+      id: 'ai-engineering', title: 'AI Engineering',
       description: 'Build the programming and practical AI skills to create useful intelligent applications and agents.',
       details: 'Explore programming foundations, AI applications, and practical projects that solve everyday problems.', image: '', imageAlt: '', color: 'orange', art: 'ai',
       skills: [

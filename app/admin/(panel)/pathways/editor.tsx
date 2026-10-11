@@ -17,7 +17,7 @@ export default function PathwaysEditor({ initial, interest, portalUrl }: { initi
   };
   const add = () => {
     const id = newKey('pathway');
-    setValue(list => [...list, { id, title: '', headline: '', description: '', details: '', skills: [], image: '', imageAlt: '', color: 'auto', art: 'auto', featured: false, visible: true, notify: true, active: false, applyUrl: '' }]);
+    setValue(list => [...list, { id, title: '', description: '', details: '', skills: [], image: '', imageAlt: '', color: 'auto', art: 'auto', featured: false, visible: true, notify: true, active: false, applyUrl: '' }]);
     setOpen(id);
   };
   let number = 0;
@@ -43,7 +43,6 @@ export default function PathwaysEditor({ initial, interest, portalUrl }: { initi
         </div>
         {isOpen && <div className="list-body"><div className="grid2">
           <TextField label="Title" value={p.title} max={120} onChange={title => set(p.id, { title })} hint="Shown as the card heading and used in notification emails."/>
-          {p.featured && <TextField label="Headline" value={p.headline} max={160} onChange={headline => set(p.id, { headline })} hint="Large heading on the featured card, e.g. “Get comfortable with computers.”"/>}
           <TextArea className="span2" label="Short description" value={p.description} max={600} onChange={description => set(p.id, { description })}/>
           <TextArea className="span2" label={p.featured ? 'Extra details (optional)' : 'Extra details (optional, shown in “Explore the skills”)'} value={p.details} max={2000} onChange={details => set(p.id, { details })}/>
           <SkillsField featured={p.featured} skills={p.skills} onChange={skills => set(p.id, { skills })}/>
@@ -55,7 +54,7 @@ export default function PathwaysEditor({ initial, interest, portalUrl }: { initi
           {p.image && <TextField className="span2" label="Picture description (alt text)" value={p.imageAlt} max={200} onChange={imageAlt => set(p.id, { imageAlt })} hint="Describe the photo for screen readers, e.g. “A student practising on a laptop at MPIITECH”."/>}
           <Toggle label="Featured “Start here” card" hint="Shows this pathway as the large card above the others." checked={p.featured} onChange={featured => set(p.id, { featured })}/>
           <div className="span2 status-panel">
-            <Toggle label="Active — accepting applications" hint="On: the card shows “Now enrolling” and an “Apply now” button. Off: it shows “Coming soon” and the email sign-up." checked={p.active} onChange={active => set(p.id, { active })}/>
+            <Toggle label="Active — accepting applications" hint="On: the card shows “Now enrolling” and an “Apply now” button. Off: it shows “Coming soon” and a “Notify me” button for email updates." checked={p.active} onChange={active => set(p.id, { active })}/>
             {p.active
               ? <TextField label="“Apply now” link" value={p.applyUrl} max={2000} onChange={applyUrl => set(p.id, { applyUrl })} placeholder={portalUrl || '/contact'}
                   hint={`Where applicants go, e.g. your application form. Leave empty to use ${portalUrl ? 'the portal’s application form' : 'the Contact us page'}.`}/>
