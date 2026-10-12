@@ -275,21 +275,25 @@ section[id]{scroll-margin-top:0}div[id],article[id]{scroll-margin-top:24px}
 .skill-icon{width:96px;height:74px;align-self:flex-end;margin:-2px -2px 10px}
 .skill-card h4{font-size:17px;line-height:1.25;letter-spacing:-.01em;margin:auto 0 0;color:var(--navy)}
 .skill-card p{font-size:13.5px;line-height:1.5;margin-top:8px;color:var(--muted)}
-.skill-more>b,.use-more>b{display:none}
-/* On a mouse, descriptions stay hidden until the card is hovered or focused, then slide over it. */
-@media(hover:hover) and (pointer:fine){
-  .skill-card{align-items:center;justify-content:center;text-align:center;min-height:236px;outline:none}
+.skill-card{outline:none}
+/* Descriptions stay hidden until the card is hovered (mouse), tapped (touch) or reached with Tab, then slide over it. */
+.skill-card[tabindex],.use-card.reveal{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.skill-more,.use-card.reveal .use-more{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:center;gap:10px;padding:24px;text-align:left;background:var(--deep);color:#fff;border-radius:inherit;opacity:0;transform:translateY(12px);transition:opacity .22s ease,transform .22s ease;pointer-events:none}
+.skill-more>b,.use-more>b{display:block;font-size:18px;line-height:1.25;letter-spacing:-.01em;color:#fff}
+.skill-more p,.use-card.reveal .use-more p{margin:0;padding:0;font-size:14.5px;line-height:1.55;color:#ffffffe0}
+.skill-card:hover .skill-more,.skill-card:focus .skill-more,.use-card.reveal:hover .use-more,.use-card.reveal:focus-within .use-more{opacity:1;transform:none}
+.skill-card:focus-visible,.use-card.reveal:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
+.use-card.reveal:focus:not(:focus-visible){outline:none}
+.use-card.reveal{min-height:196px}
+.use-card.reveal .use-arrow{z-index:3}
+@media(min-width:521px){
+  .skill-card{align-items:center;justify-content:center;text-align:center;min-height:236px}
   .skill-card .skill-icon{align-self:center;width:118px;height:90px;margin:18px 0 14px}
   .skill-card h4{margin:0}
-  .skill-more,.use-card.reveal .use-more{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:center;gap:10px;padding:24px;text-align:left;background:var(--deep);color:#fff;border-radius:inherit;opacity:0;transform:translateY(12px);transition:opacity .22s ease,transform .22s ease;pointer-events:none}
-  .skill-more>b,.use-more>b{display:block;font-size:18px;line-height:1.25;letter-spacing:-.01em;color:#fff}
-  .skill-more p,.use-card.reveal .use-more p{margin:0;padding:0;font-size:14.5px;line-height:1.55;color:#ffffffe0}
-  .skill-card:hover .skill-more,.skill-card:focus .skill-more,.use-card.reveal:hover .use-more,.use-card.reveal:focus-within .use-more{opacity:1;transform:none}
-  .skill-card:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
-  .use-card.reveal{min-height:196px}
-  .use-card.reveal .use-arrow{z-index:3}
 }
-@media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:reduce){.skill-more,.use-card.reveal .use-more{transition:opacity .1s;transform:none}}
+/* Touch-only screens: the first tap on a hire card shows its description; the arrow then opens the form. */
+@media not (any-hover:hover){.use-card.reveal h3 a{pointer-events:none}.use-card.reveal h3 a:after{display:none}}
+@media(prefers-reduced-motion:reduce){.skill-more,.use-card.reveal .use-more{transition:opacity .1s;transform:none}}
 @media(max-width:980px){.skill-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){
   .start-card{--card-pad:22px;grid-template-columns:1fr;grid-template-areas:"media" "intro" "actions" "panel";border-radius:22px;margin-bottom:20px}
@@ -304,7 +308,7 @@ section[id]{scroll-margin-top:0}div[id],article[id]{scroll-margin-top:24px}
   .skill-card h4{font-size:15px}
   .skill-card p{font-size:13px}
 }
-@media(max-width:520px){.skill-cards{grid-template-columns:1fr}.skill-card{display:grid;grid-template-columns:68px minmax(0,1fr);column-gap:14px;align-items:start;padding:14px 16px}.skill-icon{grid-column:1;grid-row:1/span 3;width:68px;height:54px;margin:0;align-self:center}.skill-num{position:static;grid-column:2;justify-self:start;font-size:12px;padding:4px 8px;border-radius:8px;margin-bottom:6px}.skill-card h4{grid-column:2;margin:0}.skill-more{grid-column:2}.skill-card p{margin-top:4px}}
+@media(max-width:520px){.skill-cards{grid-template-columns:1fr}.skill-card{display:grid;grid-template-columns:68px minmax(0,1fr);column-gap:14px;align-items:start;padding:14px 16px}.skill-icon{grid-column:1;grid-row:1/span 3;width:68px;height:54px;margin:0;align-self:center}.skill-num{position:static;grid-column:2;justify-self:start;font-size:12px;padding:4px 8px;border-radius:8px;margin-bottom:6px}.skill-card h4{grid-column:2;margin:0}.skill-card{min-height:118px}.skill-more,.use-card.reveal .use-more{padding:14px 18px;gap:4px}.skill-more>b{font-size:15px}.skill-more p{font-size:13px}}
 @media(prefers-reduced-motion:reduce){.art-float{animation:none}}
 
 /* Pathway cards */

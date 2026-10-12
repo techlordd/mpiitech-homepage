@@ -34,14 +34,18 @@ export function UseIcon({ use }: { use: Use }) {
 
 /** A use card that opens the enquiry form with this use preselected. */
 export function UseCard({ use: u, reveal = false }: { use: Use; reveal?: boolean }) {
-  return <li className={`use-card use-card-${u.tone} ${reveal ? 'reveal' : ''}`}>
+  const href = `/hire-the-center?use=${encodeURIComponent(u.title)}#enquiry`;
+  // Revealing cards can take focus, so a tap on a touch screen shows the description first.
+  return <li className={`use-card use-card-${u.tone} ${reveal ? 'reveal' : ''}`} tabIndex={reveal ? 0 : undefined}>
     <span className="use-watermark" aria-hidden="true"><svg viewBox="0 0 100 100">{u.watermark}</svg></span>
     <UseIcon use={u}/>
-    <h3><Link href={`/hire-the-center?use=${encodeURIComponent(u.title)}#enquiry`}>{u.title}</Link></h3>
+    <h3><Link href={href}>{u.title}</Link></h3>
     {reveal
       ? <><div className="use-more"><b aria-hidden="true">{u.title}</b><p>{u.text}</p></div></>
       : <p>{u.text}</p>}
-    <span className="use-arrow" aria-hidden="true"><ArrowIcon/></span>
+    {reveal
+      ? <Link className="use-arrow" href={href} aria-hidden="true" tabIndex={-1}><ArrowIcon/></Link>
+      : <span className="use-arrow" aria-hidden="true"><ArrowIcon/></span>}
   </li>;
 }
 
